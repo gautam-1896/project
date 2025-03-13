@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BEE Quiz</title>
+    <link rel="icon" type="image/png" href="lggp_logo.png">
+    <style>
+        :root {
+            --bs-gray: #808080;
+            --bs-Lgray: #D3D3D3;
+            --bs-Cgray: #36454F;
+            --bs-Sblue: #ADD8E6;
+            --bs-gray-active: #b0b0b0;
+            --bs-blacke: #282A35;
+            --bs-login: #b4b4b4;
+            --bs-loginH: #969696;
+            --bs-Sblue-hover: #9cc7d6;
+            --bs-pure-black: #000000;
+            --bs-white: #ffffff;
+            --bs-neoWhite: #E7E9E8;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background: var(--bs-neoWhite);
+            color: var(--bs-blacke);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .quiz-container {
+            background: var(--bs-white);
+            padding: 25px;
+            width: 90%;
+            max-width: 500px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.1);
+            position: relative;
+        }
+
+        h2 {
+            margin-bottom: 20px;
+            color: var(--bs-Cgray);
+            font-size: 1.5rem;
+        }
+
+        .timer {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: var(--bs-Sblue);
+            color: var(--bs-white);
+            padding: 8px 12px;
+            border-radius: 5px;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .progress {
+            width: 100%;
+            background: var(--bs-Lgray);
+            height: 10px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: var(--bs-Sblue);
+            border-radius: 5px;
+            transition: width 0.3s;
+        }
+
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        li {
+            margin: 10px 0;
+            text-align: left;
+        }
+
+        label {
+            cursor: pointer;
+            padding: 12px;
+            display: block;
+            background: var(--bs-Lgray);
+            border-radius: 5px;
+            transition: background 0.3s, transform 0.2s;
+            color: var(--bs-blacke);
+        }
+
+        label:hover {
+            background: var(--bs-gray-active);
+            transform: translateY(-2px);
+        }
+
+        input[type="radio"] {
+            display: none;
+        }
+
+        input[type="radio"]:checked + label {
+            background: var(--bs-Sblue);
+            color: var(--bs-white);
+            font-weight: bold;
+        }
+
+        button {
+            margin-top: 20px;
+            padding: 12px;
+            width: 100%;
+            border: none;
+            background: var(--bs-Sblue);
+            color: var(--bs-white);
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background 0.3s;
+        }
+
+        button:hover {
+            background: var(--bs-Sblue-hover);
+        }
+
+        .feedback {
+            margin-top: 15px;
+            font-size: 14px;
+            color: var(--bs-Cgray);
+            font-weight: bold;
+        }
+
+        .summary {
+            text-align: left;
+            margin-top: 20px;
+        }
+
+        .summary h3 {
+            color: var(--bs-Cgray);
+            margin-bottom: 10px;
+        }
+
+        .summary p {
+            margin: 5px 0;
+            color: var(--bs-blacke);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="quiz-container" id="quiz">
+        <div class="timer" id="timer">30:00</div>
+        <div class="progress">
+            <div class="progress-bar" id="progress-bar"></div>
+        </div>
+        <h2 id="question">Question 1</h2>
+        <ul>
+            <li>
+                <input type="radio" name="answer" id="a" class="answer">
+                <label for="a" id="a_text">Option A</label>
+            </li>
+            <li>
+                <input type="radio" name="answer" id="b" class="answer">
+                <label for="b" id="b_text">Option B</label>
+            </li>
+            <li>
+                <input type="radio" name="answer" id="c" class="answer">
+                <label for="c" id="c_text">Option C</label>
+            </li>
+            <li>
+                <input type="radio" name="answer" id="d" class="answer">
+                <label for="d" id="d_text">Option D</label>
+            </li>
+        </ul>
+        <div class="feedback" id="feedback"></div>
+        <button id="submit">Submit</button>
+    </div>
+
+    <script>
+        const electricalQuestions = [
+            {
+                question: "1. According to Faraday's Law of Electromagnetic Induction, the induced emf is proportional to?",
+                a: "Magnetic field strength",
+                b: "Rate of change of magnetic flux",
+                c: "Current flowing through the coil",
+                d: "Resistance of the circuit",
+                correct: "b"
+            },
+            {
+                question: "2. Fleming’s Right-Hand Rule is used to determine the?",
+                a: "Direction of induced current",
+                b: "Direction of magnetic field",
+                c: "Magnitude of induced emf",
+                d: "Power loss in a circuit",
+                correct: "a"
+            },
+            {
+                question: "3. In an AC circuit, the RMS value is equal to?",
+                a: "Peak value × 1.414",
+                b: "Peak value ÷ 1.414",
+                c: "Peak value × 0.707",
+                d: "Both b and c",
+                correct: "d"
+            },
+            {
+                question: "4. The form factor for a pure sinusoidal AC waveform is?",
+                a: "1.11",
+                b: "1.414",
+                c: "0.707",
+                d: "2",
+                correct: "a"
+            },
+            {
+                question: "5. Which connection in a three-phase system has phase voltage equal to line voltage?",
+                a: "Star",
+                b: "Delta",
+                c: "Both",
+                d: "None",
+                correct: "b"
+            },
+            {
+                question: "6. The transformation ratio of a transformer is given by?",
+                a: "Np/Ns",
+                b: "Ns/Np",
+                c: "Vp/Vs",
+                d: "Both a and c",
+                correct: "d"
+            },
+            {
+                question: "7. The core of a transformer is usually made of?",
+                a: "Copper",
+                b: "Aluminum",
+                c: "Silicon steel",
+                d: "Plastic",
+                correct: "c"
+            },
+            {
+                question: "8. A step-up transformer increases?",
+                a: "Voltage",
+                b: "Current",
+                c: "Power",
+                d: "Resistance",
+                correct: "a"
+            },
+            {
+                question: "9. In a DC motor, the function of the commutator is to?",
+                a: "Convert DC to AC",
+                b: "Convert AC to DC",
+                c: "Reverse current direction",
+                d: "Increase efficiency",
+                correct: "c"
+            },
+            {
+                question: "10. Which type of DC motor has the highest starting torque?",
+                a: "Shunt",
+                b: "Series",
+                c: "Compound",
+                d: "None of the above",
+                correct: "b"
+            },
+            {
+                question: "11. The function of a fuse in an electrical circuit is to?",
+                a: "Increase voltage",
+                b: "Protect against overload",
+                c: "Reduce power loss",
+                d: "Enhance efficiency",
+                correct: "b"
+            },
+            {
+                question: "12. The full form of MCB is?",
+                a: "Main Circuit Breaker",
+                b: "Miniature Circuit Breaker",
+                c: "Magnetic Control Breaker",
+                d: "Motor Control Breaker",
+                correct: "b"
+            },
+            {
+                question: "13. Earthing helps in?",
+                a: "Increasing resistance",
+                b: "Providing a low resistance path to ground",
+                c: "Generating current",
+                d: "Increasing voltage",
+                correct: "b"
+            },
+            {
+                question: "14. The Zener diode is primarily used for?",
+                a: "Rectification",
+                b: "Voltage regulation",
+                c: "Amplification",
+                d: "Switching",
+                correct: "b"
+            },
+            {
+                question: "15. The working principle of an LED is based on?",
+                a: "Joule's Law",
+                b: "Electromagnetic Induction",
+                c: "Recombination of electrons and holes",
+                d: "Photoelectric effect",
+                correct: "c"
+            },
+            {
+                question: "16. Which type of filter consists of an inductor and a capacitor?",
+                a: "L filter",
+                b: "C filter",
+                c: "CLC filter",
+                d: "RC filter",
+                correct: "c"
+            },
+            {
+                question: "17. Which type of UPS provides instant switching without delay?",
+                a: "Offline UPS",
+                b: "Online UPS",
+                c: "Standby UPS",
+                d: "Hybrid UPS",
+                correct: "b"
+            },
+            {
+                question: "18. In a BJT, the majority charge carriers in an NPN transistor are?",
+                a: "Holes",
+                b: "Electrons",
+                c: "Both",
+                d: "None",
+                correct: "b"
+            },
+            {
+                question: "19. The common-emitter configuration of a transistor provides?",
+                a: "High voltage gain",
+                b: "High current gain",
+                c: "Both voltage and current gain",
+                d: "None",
+                correct: "c"
+            },
+            {
+                question: "20. The relation between alpha (α) and beta (β) of a transistor is?",
+                a: "β = α/(1 - α)",
+                b: "α = β/(1 + β)",
+                c: "Both a and b",
+                d: "None of the above",
+                correct: "c"
+            },
+            {
+                question: "21. A JFET is a?",
+                a: "Current controlled device",
+                b: "Voltage controlled device",
+                c: "Both",
+                d: "None",
+                correct: "b"
+            },
+            {
+                question: "22. The transducer that converts heat into an electrical signal is called?",
+                a: "Thermocouple",
+                b: "Photodiode",
+                c: "Strain gauge",
+                d: "Potentiometer",
+                correct: "a"
+            },
+            {
+                question: "23. Optical sensors work based on?",
+                a: "Magnetism",
+                b: "Light intensity",
+                c: "Capacitance",
+                d: "Resistance",
+                correct: "b"
+            },
+            {
+                question: "24. The selection of a transducer depends on?",
+                a: "Accuracy",
+                b: "Sensitivity",
+                c: "Environmental conditions",
+                d: "All of the above",
+                correct: "d"
+            },
+            {
+                question: "25. The unit of inductance is?",
+                a: "Ohm",
+                b: "Henry",
+                c: "Farad",
+                d: "Weber",
+                correct: "b"
+            },
+            {
+                question: "26. The bridge used to measure unknown resistance is?",
+                a: "Wheatstone bridge",
+                b: "Maxwell bridge",
+                c: "Schering bridge",
+                d: "Anderson bridge",
+                correct: "a"
+            },
+            {
+                question: "27. The basic principle of a transformer is?",
+                a: "Electromagnetic induction",
+                b: "Photoelectric effect",
+                c: "Thermoelectric effect",
+                d: "Joule’s law",
+                correct: "a"
+            },
+            {
+                question: "28. The main function of a capacitor in a rectifier circuit is to?",
+                a: "Increase voltage",
+                b: "Reduce voltage fluctuations",
+                c: "Increase current",
+                d: "Act as a switch",
+                correct: "b"
+            },
+            {
+                question: "29. The SI unit of resistivity is?",
+                a: "Ohm-meter",
+                b: "Ohm",
+                c: "Siemens",
+                d: "Coulomb",
+                correct: "a"
+            },
+            {
+                question: "30. The instrument used to measure high DC currents is?",
+                a: "Ammeter",
+                b: "Galvanometer",
+                c: "Wattmeter",
+                d: "Voltmeter",
+                correct: "a"
+            }
+        ];
+
+        let currentQuiz = 0;
+        let score = 0;
+        let timeLeft = 30 * 60;
+
+        const timerEl = document.getElementById("timer");
+        const quizEl = document.getElementById("quiz");
+        const questionEl = document.getElementById("question");
+        const answerEls = document.querySelectorAll(".answer");
+        const a_text = document.getElementById("a_text");
+        const b_text = document.getElementById("b_text");
+        const c_text = document.getElementById("c_text");
+        const d_text = document.getElementById("d_text");
+        const submitBtn = document.getElementById("submit");
+        const feedbackEl = document.getElementById("feedback");
+        const progressBar = document.getElementById("progress-bar");
+
+        function loadQuiz() {
+            deselectAnswers();
+            feedbackEl.textContent = "";
+            const currentQuizData = electricalQuestions[currentQuiz];
+            questionEl.innerText = currentQuizData.question;
+            a_text.innerText = currentQuizData.a;
+            b_text.innerText = currentQuizData.b;
+            c_text.innerText = currentQuizData.c;
+            d_text.innerText = currentQuizData.d;
+            updateProgressBar();
+        }
+
+        function deselectAnswers() {
+            answerEls.forEach(answerEl => answerEl.checked = false);
+        }
+
+        function getSelected() {
+            let answer;
+            answerEls.forEach(answerEl => {
+                if (answerEl.checked) {
+                    answer = answerEl.id;
+                }
+            });
+            return answer;
+        }
+
+        function updateProgressBar() {
+            const progress = ((currentQuiz + 1) / electricalQuestions.length) * 100;
+            progressBar.style.width = `${progress}%`;
+        }
+
+        function startTimer() {
+            const countdown = setInterval(() => {
+                let minutes = Math.floor(timeLeft / 60);
+                let seconds = timeLeft % 60;
+                timerEl.textContent = `${minutes}:${seconds < 10 ? "0" : ""}${seconds}`;
+                timeLeft--;
+                if (timeLeft < 0) {
+                    clearInterval(countdown);
+                    autoSubmit();
+                }
+            }, 1000);
+        }
+
+        function autoSubmit() {
+            quizEl.innerHTML = `<h2>Time's up! You scored ${score}/${electricalQuestions.length}</h2>
+                                <div class="summary">
+                                    <h3>Summary:</h3>
+                                    <p>Correct Answers: ${score}</p>
+                                    <p>Incorrect Answers: ${electricalQuestions.length - score}</p>
+                                </div>
+                                <button onclick="location.reload()">Restart</button>`;
+        }
+
+        submitBtn.addEventListener("click", () => {
+            const answer = getSelected();
+            if (answer) {
+                if (answer === electricalQuestions[currentQuiz].correct) {
+                    score++;
+                    feedbackEl.textContent = "Correct!";
+                    feedbackEl.style.color = "green";
+                } else {
+                    feedbackEl.textContent = "Incorrect!";
+                    feedbackEl.style.color = "red";
+                }
+                currentQuiz++;
+                if (currentQuiz < electricalQuestions.length) {
+                    setTimeout(loadQuiz, 1000);
+                } else {
+                    quizEl.innerHTML = `<h2>You scored ${score}/${electricalQuestions.length}</h2>
+                                        <div class="summary">
+                                            <h3>Summary:</h3>
+                                            <p>Correct Answers: ${score}</p>
+                                            <p>Incorrect Answers: ${electricalQuestions.length - score}</p>
+                                        </div>
+                                        <button onclick="location.reload()">Restart</button>`;
+                }
+            }
+        });
+
+        loadQuiz();
+        startTimer();
+    </script>
+
+</body>
+</html>

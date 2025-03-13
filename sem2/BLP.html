@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BLP Quiz</title>
+    <link rel="icon" type="image/png" href="lggp_logo.png">
+    <style>
+        :root {
+            --bs-gray: #808080;
+            --bs-Lgray: #D3D3D3;
+            --bs-Cgray: #36454F;
+            --bs-Sblue: #ADD8E6;
+            --bs-gray-active: #b0b0b0;
+            --bs-blacke: #282A35;
+            --bs-login: #b4b4b4;
+            --bs-loginH: #969696;
+            --bs-Sblue-hover: #9cc7d6;
+            --bs-pure-black: #000000;
+            --bs-white: #ffffff;
+            --bs-neoWhite: #E7E9E8;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background: var(--bs-neoWhite);
+            color: var(--bs-blacke);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .quiz-container {
+            background: var(--bs-white);
+            padding: 25px;
+            width: 90%;
+            max-width: 500px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.1);
+            position: relative;
+        }
+
+        h2 {
+            margin-bottom: 20px;
+            color: var(--bs-Cgray);
+            font-size: 1.5rem;
+        }
+
+        .timer {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: var(--bs-Sblue);
+            color: var(--bs-white);
+            padding: 8px 12px;
+            border-radius: 5px;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .progress {
+            width: 100%;
+            background: var(--bs-Lgray);
+            height: 10px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: var(--bs-Sblue);
+            border-radius: 5px;
+            transition: width 0.3s;
+        }
+
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        li {
+            margin: 10px 0;
+            text-align: left;
+        }
+
+        label {
+            cursor: pointer;
+            padding: 12px;
+            display: block;
+            background: var(--bs-Lgray);
+            border-radius: 5px;
+            transition: background 0.3s, transform 0.2s;
+            color: var(--bs-blacke);
+        }
+
+        label:hover {
+            background: var(--bs-gray-active);
+            transform: translateY(-2px);
+        }
+
+        input[type="radio"] {
+            display: none;
+        }
+
+        input[type="radio"]:checked + label {
+            background: var(--bs-Sblue);
+            color: var(--bs-white);
+            font-weight: bold;
+        }
+
+        button {
+            margin-top: 20px;
+            padding: 12px;
+            width: 100%;
+            border: none;
+            background: var(--bs-Sblue);
+            color: var(--bs-white);
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background 0.3s;
+        }
+
+        button:hover {
+            background: var(--bs-Sblue-hover);
+        }
+
+        .feedback {
+            margin-top: 15px;
+            font-size: 14px;
+            color: var(--bs-Cgray);
+            font-weight: bold;
+        }
+
+        .summary {
+            text-align: left;
+            margin-top: 20px;
+        }
+
+        .summary h3 {
+            color: var(--bs-Cgray);
+            margin-bottom: 10px;
+        }
+
+        .summary p {
+            margin: 5px 0;
+            color: var(--bs-blacke);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="quiz-container" id="quiz">
+        <div class="timer" id="timer">30:00</div>
+        <div class="progress">
+            <div class="progress-bar" id="progress-bar"></div>
+        </div>
+        <h2 id="question">Question 1</h2>
+        <ul>
+            <li>
+                <input type="radio" name="answer" id="a" class="answer">
+                <label for="a" id="a_text">Option A</label>
+            </li>
+            <li>
+                <input type="radio" name="answer" id="b" class="answer">
+                <label for="b" id="b_text">Option B</label>
+            </li>
+            <li>
+                <input type="radio" name="answer" id="c" class="answer">
+                <label for="c" id="c_text">Option C</label>
+            </li>
+            <li>
+                <input type="radio" name="answer" id="d" class="answer">
+                <label for="d" id="d_text">Option D</label>
+            </li>
+        </ul>
+        <div class="feedback" id="feedback"></div>
+        <button id="submit">Submit</button>
+    </div>
+
+    <script>
+        const linuxQuestions = [
+            {
+                question: "1. Who developed the Linux operating system?",
+                a: "Bill Gates",
+                b: "Linus Torvalds",
+                c: "Steve Jobs",
+                d: "Dennis Ritchie",
+                correct: "b"
+            },
+            {
+                question: "2. Which Linux file system is most commonly used today?",
+                a: "NTFS",
+                b: "FAT32",
+                c: "ext4",
+                d: "HFS+",
+                correct: "c"
+            },
+            {
+                question: "3. Which of the following is NOT a type of shell in Linux?",
+                a: "Bourne Shell",
+                b: "Korn Shell",
+                c: "Windows Shell",
+                d: "C Shell",
+                correct: "c"
+            },
+            {
+                question: "4. What is the purpose of a shell in Linux?",
+                a: "Manage hardware",
+                b: "Execute user commands",
+                c: "Store data",
+                d: "None of the above",
+                correct: "b"
+            },
+            {
+                question: "5. Which command is used to find out the version of Linux being used?",
+                a: "uname -r",
+                b: "version",
+                c: "kernel",
+                d: "ls -v",
+                correct: "a"
+            },
+            {
+                question: "6. Which command is used to display the current date in Linux?",
+                a: "time",
+                b: "datetime",
+                c: "date",
+                d: "now",
+                correct: "c"
+            },
+            {
+                question: "7. Which Linux command is used to display a message on the terminal?",
+                a: "print",
+                b: "show",
+                c: "echo",
+                d: "display",
+                correct: "c"
+            },
+            {
+                question: "8. What does the 'passwd' command do in Linux?",
+                a: "Displays users",
+                b: "Changes the user password",
+                c: "Deletes a user",
+                d: "Lists active sessions",
+                correct: "b"
+            },
+            {
+                question: "9. Which command is used to list files in a directory?",
+                a: "dir",
+                b: "ls",
+                c: "show",
+                d: "list",
+                correct: "b"
+            },
+            {
+                question: "10. How do you create a new directory in Linux?",
+                a: "newdir",
+                b: "mkdir",
+                c: "createdir",
+                d: "makedir",
+                correct: "b"
+            },
+            {
+                question: "11. What is the home directory symbol in Linux?",
+                a: "/",
+                b: "~",
+                c: "..",
+                d: "$",
+                correct: "b"
+            },
+            {
+                question: "12. How do you remove a directory in Linux?",
+                a: "rmdir",
+                b: "deletedir",
+                c: "remove",
+                d: "rm -d",
+                correct: "a"
+            },
+            {
+                question: "13. What is the purpose of the 'cat' command?",
+                a: "Display the contents of a file",
+                b: "Rename a file",
+                c: "Delete a file",
+                d: "Copy a file",
+                correct: "a"
+            },
+            {
+                question: "14. What command is used to compress files in Linux?",
+                a: "zip",
+                b: "tar",
+                c: "gzip",
+                d: "all of the above",
+                correct: "d"
+            },
+            {
+                question: "15. Which command is used to check file type?",
+                a: "check",
+                b: "file",
+                c: "ls -f",
+                d: "verify",
+                correct: "b"
+            },
+            {
+                question: "16. How do you count the number of lines in a file?",
+                a: "wc -l",
+                b: "count -l",
+                c: "linecount",
+                d: "countlines",
+                correct: "a"
+            },
+            {
+                question: "17. Which command is used to search for a pattern in a file?",
+                a: "find",
+                b: "search",
+                c: "grep",
+                d: "locate",
+                correct: "c"
+            },
+            {
+                question: "18. What does 'chmod' do in Linux?",
+                a: "Change file permissions",
+                b: "Move files",
+                c: "Rename files",
+                d: "Copy files",
+                correct: "a"
+            },
+            {
+                question: "19. How do you change file ownership in Linux?",
+                a: "chmod",
+                b: "chown",
+                c: "chgrp",
+                d: "chperm",
+                correct: "b"
+            },
+            {
+                question: "20. What is the default text editor in Linux?",
+                a: "nano",
+                b: "vim",
+                c: "gedit",
+                d: "vi",
+                correct: "d"
+            },
+            {
+                question: "21. What is the purpose of 'tee' command?",
+                a: "Splits output into multiple files",
+                b: "Combines multiple files",
+                c: "Redirects output to a file and displays it",
+                d: "Copies files",
+                correct: "c"
+            },
+            {
+                question: "22. Which command is used to exit the vi editor?",
+                a: "quit",
+                b: "exit",
+                c: ":q!",
+                d: "leave",
+                correct: "c"
+            },
+            {
+                question: "23. What is the purpose of 'head' command?",
+                a: "Displays the last few lines of a file",
+                b: "Displays the first few lines of a file",
+                c: "Deletes the first line of a file",
+                d: "Copies the file",
+                correct: "b"
+            },
+            {
+                question: "24. What does the 'cut' command do?",
+                a: "Deletes files",
+                b: "Cuts text from a file",
+                c: "Extracts specific columns from a file",
+                d: "Moves files",
+                correct: "c"
+            },
+            {
+                question: "25. Which command is used to run a shell script?",
+                a: "execute",
+                b: "sh",
+                c: "run",
+                d: "exec",
+                correct: "b"
+            },
+            {
+                question: "26. Which operator is used for conditional execution in shell scripting?",
+                a: "&&",
+                b: "||",
+                c: "Both a and b",
+                d: "==",
+                correct: "c"
+            },
+            {
+                question: "27. What does the 'expr' command do?",
+                a: "Evaluate expressions",
+                b: "Change file permissions",
+                c: "Rename files",
+                d: "Find processes",
+                correct: "a"
+            },
+            {
+                question: "28. Which loop is used to iterate over a list of values?",
+                a: "while",
+                b: "for",
+                c: "until",
+                d: "if",
+                correct: "b"
+            },
+            {
+                question: "29. What does the 'uniq' command do?",
+                a: "Removes duplicate lines",
+                b: "Sorts a file",
+                c: "Compares two files",
+                d: "Counts lines",
+                correct: "a"
+            },
+            {
+                question: "30. Which command displays the system's hostname?",
+                a: "hostname",
+                b: "sysname",
+                c: "machinename",
+                d: "systemname",
+                correct: "a"
+            }
+        ];
+
+        let currentQuiz = 0;
+        let score = 0;
+        let timeLeft = 30 * 60;
+
+        const timerEl = document.getElementById("timer");
+        const quizEl = document.getElementById("quiz");
+        const questionEl = document.getElementById("question");
+        const answerEls = document.querySelectorAll(".answer");
+        const a_text = document.getElementById("a_text");
+        const b_text = document.getElementById("b_text");
+        const c_text = document.getElementById("c_text");
+        const d_text = document.getElementById("d_text");
+        const submitBtn = document.getElementById("submit");
+        const feedbackEl = document.getElementById("feedback");
+        const progressBar = document.getElementById("progress-bar");
+
+        function loadQuiz() {
+            deselectAnswers();
+            feedbackEl.textContent = "";
+            const currentQuizData = linuxQuestions[currentQuiz];
+            questionEl.innerText = currentQuizData.question;
+            a_text.innerText = currentQuizData.a;
+            b_text.innerText = currentQuizData.b;
+            c_text.innerText = currentQuizData.c;
+            d_text.innerText = currentQuizData.d;
+            updateProgressBar();
+        }
+
+        function deselectAnswers() {
+            answerEls.forEach(answerEl => answerEl.checked = false);
+        }
+
+        function getSelected() {
+            let answer;
+            answerEls.forEach(answerEl => {
+                if (answerEl.checked) {
+                    answer = answerEl.id;
+                }
+            });
+            return answer;
+        }
+
+        function updateProgressBar() {
+            const progress = ((currentQuiz + 1) / linuxQuestions.length) * 100;
+            progressBar.style.width = `${progress}%`;
+        }
+
+        function startTimer() {
+            const countdown = setInterval(() => {
+                let minutes = Math.floor(timeLeft / 60);
+                let seconds = timeLeft % 60;
+                timerEl.textContent = `${minutes}:${seconds < 10 ? "0" : ""}${seconds}`;
+                timeLeft--;
+                if (timeLeft < 0) {
+                    clearInterval(countdown);
+                    autoSubmit();
+                }
+            }, 1000);
+        }
+
+        function autoSubmit() {
+            quizEl.innerHTML = `<h2>Time's up! You scored ${score}/${linuxQuestions.length}</h2>
+                                <div class="summary">
+                                    <h3>Summary:</h3>
+                                    <p>Correct Answers: ${score}</p>
+                                    <p>Incorrect Answers: ${linuxQuestions.length - score}</p>
+                                </div>
+                                <button onclick="location.reload()">Restart</button>`;
+        }
+
+        submitBtn.addEventListener("click", () => {
+            const answer = getSelected();
+            if (answer) {
+                if (answer === linuxQuestions[currentQuiz].correct) {
+                    score++;
+                    feedbackEl.textContent = "Correct!";
+                    feedbackEl.style.color = "green";
+                } else {
+                    feedbackEl.textContent = "Incorrect!";
+                    feedbackEl.style.color = "red";
+                }
+                currentQuiz++;
+                if (currentQuiz < linuxQuestions.length) {
+                    setTimeout(loadQuiz, 1000);
+                } else {
+                    quizEl.innerHTML = `<h2>You scored ${score}/${linuxQuestions.length}</h2>
+                                        <div class="summary">
+                                            <h3>Summary:</h3>
+                                            <p>Correct Answers: ${score}</p>
+                                            <p>Incorrect Answers: ${linuxQuestions.length - score}</p>
+                                        </div>
+                                        <button onclick="location.reload()">Restart</button>`;
+                }
+            }
+        });
+
+        loadQuiz();
+        startTimer();
+    </script>
+
+</body>
+</html>

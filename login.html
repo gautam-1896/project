@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Page</title>
+    <style>:root {
+        --bs-gray: #808080;
+        --bs-Lgray: #D3D3D3;
+        --bs-Cgray: #36454F;
+        --bs-Sblue: #ADD8E6;
+        --bs-gray-active: rgb(192, 191, 191);
+        --bs-blacke: #282A35;
+        --bs-login: #b4b4b4;
+        --bs-loginH: #969696;
+        --bs-Sblue-hover: #bddce7;
+        --bs-pure-black: #000000;
+        --bs-white: #ffffff;
+        --bs-neoWhite: #E7E9E8;
+    }
+    
+    body {
+        font-family: Arial, sans-serif;
+        background-color: var(--bs-neoWhite);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        margin: 0;
+    }
+    
+    .login-container {
+        background-color: var(--bs-white);
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        width: 300px;
+        text-align: center;
+    }
+    
+    h2 {
+        margin-bottom: 20px;
+        color: var(--bs-blacke);
+    }
+    
+    label {
+        display: block;
+        margin-bottom: 5px;
+        font-weight: bold;
+        color: var(--bs-Cgray);
+    }
+    
+    input {
+        width: 100%;
+        padding: 8px;
+        margin-bottom: 15px;
+        border: 1px solid var(--bs-Lgray);
+        border-radius: 4px;
+        background-color: var(--bs-neoWhite);
+        color: var(--bs-blacke);
+    }
+    
+    input:focus {
+        border-color: var(--bs-Sblue);
+        outline: none;
+    }
+    
+    button {
+        width: 100%;
+        padding: 10px;
+        background-color: var(--bs-login);
+        color: var(--bs-white);
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-weight: bold;
+    }
+    
+    button:hover {
+        background-color: var(--bs-loginH);
+    }
+    
+    #loginStatus {
+        margin-top: 15px;
+        font-weight: bold;
+    }
+    
+    #loginStatus.success {
+        color: var(--bs-Sblue);
+    }
+    
+    #loginStatus.error {
+        color: var(--bs-gray-active);
+    }
+    </style>
+    
+</head>
+<body>
+    <div class="login-container">
+        <h2>Login</h2>
+        <form id="loginForm">
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" required>
+            
+            <label for="password">Password:</label>
+            <input type="password" id="password" name="password" required>
+            
+            <button type="submit">Login</button>
+        </form>
+        <p id="loginStatus"></p>
+    </div>
+
+    <script>document.getElementById("loginForm").addEventListener("submit", function (event) {
+        event.preventDefault(); // Prevent form submission
+    
+        // Get input values
+        const email = document.getElementById("email").value;
+        const password = document.getElementById("password").value;
+    
+        // Simple validation (for demonstration purposes)
+        if (email === "user@example.com" && password === "password123") {
+            // Successful login
+            document.getElementById("loginStatus").textContent = "Login successful!";
+            document.getElementById("loginStatus").style.color = "#28a745";
+        } else {
+            // Failed login
+            document.getElementById("loginStatus").textContent = "Invalid email or password.";
+            document.getElementById("loginStatus").style.color = "#dc3545";
+        }
+    });</script>
+</body>
+</html>

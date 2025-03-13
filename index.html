@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LGGPStudent</title>
+    <!-- Link to your CSS file -->
+    <link rel="stylesheet" href="style.css">
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
+    <style>
+        body {
+            background-color: #ffffff;
+            margin: 0;
+            padding: 0;
+            font-family: 'Poppins', sans-serif;
+            width: 100vw;
+            overflow-x: hidden;
+        }
+
+        .firstSection {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            margin: 20px;
+            flex-wrap: wrap;
+            padding: 20px;
+           
+        }
+
+        .leftSection {
+            width: 50%;
+            font-size: 2.5rem;
+            text-align: left;
+            padding: 20px;
+
+        }
+
+        .rightSection {
+            display: flex;
+            justify-content: center;
+            width: 50%;
+            transition: all 0.3s ease-in-out;
+            position: relative;
+            padding: 12px;
+        }
+
+        .rightSection img {
+            width: 80%;
+            max-width: 400px;
+            height: auto;
+            position: relative;
+        }
+
+        .rightSection::before {
+            content: "";
+            display: block;
+            position: absolute;
+            top: -10px;
+            left: -10px;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.1);
+            z-index: -1;
+            border-radius: 10px;
+        }
+
+        .rightSection::after {
+            content: "";
+            display: block;
+            position: absolute;
+            bottom: -10px;
+            right: -10px;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.05);
+            z-index: -1;
+            border-radius: 10px;
+        }
+
+        /* Responsive design adjustments */
+        @media (max-width: 768px) {
+            .firstSection {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .leftSection {
+                width: 90%;
+                font-size: 2rem;
+                text-align: center;
+                padding: 12px;
+            }
+
+            .rightSection {
+                width: 100%;
+                padding: 12px;
+            }
+
+            .rightSection img {
+                padding: 10px;
+                width: 90%;
+                max-width: 350px;
+            }
+        }
+
+        @media (max-width: 480px) {
+
+            html,
+            body {
+                width: 100%;
+                height: 100%;
+                overflow-x: hidden;
+                -webkit-text-size-adjust: 100%;
+            }
+
+            .leftSection {
+                font-size: 1.8rem;
+                padding: 12px;
+            }
+
+            .rightSection {
+                padding: 12px;
+            }
+
+            .rightSection img {
+                width: 100%;
+                max-width: 300px;
+            }
+        }
+
+        /* Ensure image stays in place, but bring text before it when navigation is clicked */
+        .menu-btn:focus~.firstSection {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .menu-btn:focus~.firstSection .leftSection {
+            order: -1;
+        }
+
+        .menu-btn:focus~.firstSection .rightSection {
+            order: 1;
+        }
+
+        /* Ensure perfect fit on any display without zoom adjustments */
+        meta[name="viewport"] {
+            content: "width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no";
+        }
+
+        .blue {
+            color: #81c5db;
+            font-weight: 600;
+        }
+
+        #element {
+            color: #81c5db;
+            font-weight: 600;
+        }
+        /* Ensure full-page height and push footer to the bottom */
+        html, body {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    margin: 0; 
+    overflow-y: scroll; 
+}
+/* Main content will expand to push the footer down */
+.main-content {
+    flex: 1;
+    overflow-y: auto; /* Add scrollbar if content overflows */
+}   </style>
+      <link rel="icon" type="image/png" href="lggp_logo.png">
+
+</head>
+<body>
+    <!-- Header Section -->
+    <header>
+        <div class="header-left">
+            <!-- Logo -->
+            <a href="#" class="menu-btn">
+                <div class="DiploTech-logo">
+                    <img src="lggp_logo.png" alt="LGGP Logo">
+                </div>
+            </a>
+
+            <!-- Tutorials Button -->
+            <div href="#Tutorials" class="menu-btn" id="Tutorials-btn">
+                Tutorials
+                <i class="fa-solid fa-caret-down"></i>
+            </div>
+
+            <!-- Services Button -->
+            <div href="#services" class="menu-btn" id="services-btn">
+                Services
+                <i class="fa-solid fa-caret-down"></i>
+            </div>
+
+            <!-- Exercises Button -->
+            <div href="#exercises" class="menu-btn" id="exercises-btn">
+                Exercises
+                <i class="fa-solid fa-caret-down"></i>
+            </div>
+
+            <!-- Videos Button -->
+            <!-- <div href="#videos" class="menu-btn" id="video-btn">
+                Videos
+            </div> -->
+
+            <!-- Mobile Menu Button -->
+            <div class="menu-btn" id="menu-btn-mobile">
+                Menu
+                <i class="fa-solid fa-caret-down"></i>
+            </div>
+        </div>
+
+        <!-- Header Right Section -->
+        <div class="header-right">
+            <!-- Toggle Light/Dark Mode Button -->
+            <div class="toggleLightDark btn">
+                <a href="https://vscode.dev/" class="btn btn-link bg-loginB1" id="login-btn" target="_blank">
+                    <i class="fa-solid fa-code"></i>
+                </a>
+            </div>
+
+            <!-- Login Button -->
+            <a href="auth/src/app/page.tsx" class="btn btn-link bg-loginB1" id="login-btn">
+                Log in
+            </a>
+        </div>
+    </header>
+
+    <!-- Mobile Menu Container -->
+<div class="mobilr-menu-container mobile-menu-nav-hidden" id="mobile-menu-nav">
+    <!-- Close Button for Mobile Menu -->
+    <div class="mobil-menu-close-btn">
+        <button id="mobile-Nav-close" aria-label="Close Menu">
+            <i class="fa-solid fa-xmark"></i>
+        </button>
+    </div>
+<!-- 
+      Back Button
+      <button id="back-btn" class="back-btn">
+        <i class="fa-solid fa-arrow-left"></i> Back to Home
+    </button> -->
+
+    <!-- Mobile Menu List -->
+    <ul>
+        <!-- Tutorials Section -->
+        <div id="tutorial_menuLink_mobile" class="menu-btn-mobile_menu">
+            Tutorials
+            <i class="fa-solid fa-caret-down"></i>
+            <!-- Tutorials Dropdown Content -->
+            <div class="nested-naivgation-container_content_Mobile mobile-dropdown-hidden" id="Tutorial_menu_mobile">
+                <div class="nested-navigation_item">
+                    <h1>WEB DEVELOPMENT</h1>
+                    <a href="https://1drv.ms/b/s!AgjJOo8bTpyAfPpJ5VWXKHjYspc?e=NUaVep" target="_blank">Learn HTML</a>
+                    <a href="https://1drv.ms/b/s!AgjJOo8bTpyAeBtq4HfA_x_-kFQ?e=64yg8U" target="_blank">Learn CSS</a>
+                    <a href="https://1drv.ms/b/s!AgjJOo8bTpyAdhPPLTfbmkaEZsU?e=Q9PTdu" target="_blank">Learn JavaScript</a>
+                    <a href="https://1drv.ms/b/s!AgjJOo8bTpyAd47ZObZKhH4BlmI?e=9hi8IT" target="_blank">Learn PHP</a>
+                    <a href="https://1drv.ms/b/s!AgjJOo8bTpyAebvh_N9bics4cVg?e=3XUA3N" target="_blank">Learn Node.js</a>
+                </div>
+                <div class="nested-navigation_item">
+                    <h1>LEARN PROGRAMMING</h1>
+                    <a href="https://1drv.ms/b/s!AgjJOo8bTpyAfx2BY1HUMUKfPFE?e=xtTAKq" target="_blank">Learn Python</a>
+                    <a href="https://1drv.ms/b/s!AgjJOo8bTpyAgQWLErBXHZojXM44?e=h8SfuU" target="_blank">Learn C</a>
+                    <a href="https://1drv.ms/b/s!AgjJOo8bTpyAgQH5tlNksgtbA0bL?e=fg8wl8" target="_blank">Learn C++</a>
+                    <a href="https://1drv.ms/b/s!AgjJOo8bTpyAgQRwk294Vr_Z1_bc?e=hKbgo7" target="_blank">Learn Java</a>
+                    <a href="https://1drv.ms/b/s!AgjJOo8bTpyAgQfsYcJVVJdHyqaN?e=97AcKM" target="_blank">Learn Kotlin</a>
+                </div>
+                <div class="nested-navigation_item">
+                    <h1>DATABASE MANAGEMENT SYSTEM</h1>
+                    <a href="https://1drv.ms/b/s!AgjJOo8bTpyAgQjKA1I6dv6_5oQ3?e=C1qOnX" target="_blank">Learn Microsoft SQL Server</a>
+                    <a href="https://1drv.ms/b/s!AgjJOo8bTpyAgQLYNw8kU2LpZox3?e=NWEfzB" target="_blank">Learn SQL</a>
+                    <a href="https://1drv.ms/b/s!AgjJOo8bTpyAgQOrlkhdoRcHix7E?e=6koctl" target="_blank">Learn MySQL</a>
+                    <a href="https://1drv.ms/b/s!AgjJOo8bTpyAgQYWtld54FWkzgBb?e=c6eEMV" target="_blank">Learn MongoDB</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Services Section -->
+        <div id="services_menuLink_mobile" class="menu-btn-mobile_menu">
+            Services
+            <i class="fa-solid fa-caret-down"></i>
+            <!-- Services Dropdown Content -->
+            <div class="nested-naivgation-container_content_Mobile mobile-dropdown-hidden" id="Services_menu_mobile">
+                <div class="nested-navigation_item">
+                    <h1>SECOND SEMESTER  (CO)</h1>
+                    <a href="https://www.codeblocks.org/downloads/" target="_blank">Programming in C (Code::Blocks)</a>
+                    <a href="https://ubuntu.com/download" target="_blank">Linux Basics (Ubuntu)</a>
+                    <a href="https://code.visualstudio.com/download" target="_blank">Web Page Designing (VS Code)</a>
+                </div>
+                <div class="nested-navigation_item">
+                    <h1>THIRD SEMESTER (CO)</h1>
+                    <a href="https://www.codeblocks.org/downloads/" target="_blank">Data Structure Using C (Code::Blocks)</a>
+                    <a href="https://www.mysql.com/downloads/" target="_blank">Database Management System (MySQL)</a>
+                    <a href="#" target="_blank">Digital Techniques</a>
+                    <a href="https://www.codeblocks.org/downloads/" target="_blank">Object-Oriented Programming Using C++ (Code::Blocks)</a>
+                    <a href="https://www.opengl.org/resources/libraries/glut/" target="_blank">Computer Graphics (OpenGL + GLUT)</a>
+                </div>
+                <div class="nested-navigation_item">
+                    <h1>FOURTH SEMESTER (CO)</h1>
+                    <a href="https://www.oracle.com/java/technologies/javase-jdk17-downloads.html" target="_blank">Java Programming (JDK 17)</a>
+                    <a href="#" target="_blank">Data Communication and Computer Network</a>
+                    <a href="https://www.keil.com/download/" target="_blank">Microprocessor Programming (Keil uVision)</a>
+                    <a href="https://www.python.org/downloads/" target="_blank">Python Programming (Python)</a>
+                    <a href="https://www.figma.com/downloads/" target="_blank">UI/UX Design (Figma)</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Exercises Section -->
+        <div id="exercises_menuLink_mobile" class="menu-btn-mobile_menu">
+            Exercises
+            <i class="fa-solid fa-caret-down"></i>
+            <!-- Exercises Dropdown Content -->
+            <div class="nested-naivgation-container_content_Mobile mobile-dropdown-hidden" id="Exercises_menu_mobile">
+                <div class="nested-navigation_item">
+                    <h1>FIRST SEMESTER (CO)</h1>
+                    <a href="sem1/ICT.html" target="_blank">Fundamentals of ICT (ICT-311001)</a>
+                    <a href="sem1/BMS.html" target="_blank">Basic Mathematics (BMS-311302)</a>
+                    <a href="sem1/BSC.html" target="_blank">Basic Science (BSC-311305)</a>
+                </div>
+                <div class="nested-navigation_item">
+                    <h1>SECOND SEMESTER (CO)</h1>
+                    <a href="sem2/BLP.html" target="_blank">Linux Basic (BLP-312001)</a>
+                    <a href="sem2/WPD.html" target="_blank">Web Page Designing (WPD-312004)</a>
+                    <a href="sem2/AMS.html" target="_blank">Applied Mathematics (AMS-312301)</a>
+                    <a href="sem2/BEE.html" target="_blank">Basic Electrical and Electronic (BEE-312302)</a>
+                    <a href="sem2/PIC.html" target="_blank">Programming in ‘C’ (PIC-312303)</a>
+                </div>
+                <div class="nested-navigation_item">
+                    <h1>THIRD SEMESTER (CO)</h1>
+                    <a href="sem3/DSU.html" target="_blank">Data Structure using ‘C’ (DSU- 313301)</a>
+                    <a href="sem3/DBMS.html" target="_blank">Database Management System (DMS-313302)</a>
+                    <a href="sem3/DTE.html" target="_blank">Digital Techniques (DTE-313303)</a>
+                    <a href="sem3/OOP.html" target="_blank">Object-Oriented Programming using C++ (OOP-313304)</a>
+                </div>
+                <div class="nested-navigation_item">
+                    <h1>FOURTH SEMESTER (CO)</h1>
+                    <a href="sem4/PYT.HTML" target="_blank">Python programming (PWP-314004)</a>
+                    <a href="" target="_blank">UI/UX Design (UID-314005)</a>
+                    <a href="sem4/EES.html" target="_blank">Environmental Education and Sustainability (EES-314301)</a>
+                    <a href="sem4/JPR.html" target="_blank">Java programming (JPR-314317)</a>
+                    <a href="sem4/DCCN.html" target="_blank">Data Communication and Computer Network (DCN-314318)</a>
+                    <a href="sem4/mic.html" target="_blank">Microprocessor Programming (MIC-314321)</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Videos Section
+        <div id="videos_menuLink_mobile" class="menu-btn-mobile_menu">
+            Videos
+            <i class="fa-solid fa-caret-down"></i>
+            Videos Dropdown Content
+            <div class="nested-naivgation-container_content_Mobile mobile-dropdown-hidden" id="Videos_menu_mobile">
+                <div class="nested-navigation_item">
+                    <h1>VIDEOS</h1>
+                    <a href="#" target="_blank">Video 1</a>
+                    <a href="#" target="_blank">Video 2</a>
+                    <a href="#" target="_blank">Video 3</a>
+                </div>
+            </div>
+        </div> -->
+    </ul>
+</div>
+    <!-- Tutorials Section -->
+    <div class="nested-navigation-container nested-navigation_hidden" id="nested-navigation-container_id">
+        <div class="nested-navigation-container_close-btn" id="nested-navigation-close-Btn">
+            <!-- Close Button for Tutorials Section -->
+            <button><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <div class="nested-navigation-container_content">
+            <h1 style="color:white;  padding-bottom: 50px;">Tutorials</h1>
+            <div class="nested-navigation-container_Content_data">
+                <!-- Web Development Tutorials -->
+                <div class="nested-navigation_item">
+                    <H2>WEB DEVELOPMENT</H2>
+                    <a href="https://1drv.ms/b/s!AgjJOo8bTpyAfPpJ5VWXKHjYspc?e=NUaVep" target="_blank">Learn HTML</a>
+                    <a href="https://1drv.ms/b/s!AgjJOo8bTpyAeBtq4HfA_x_-kFQ?e=64yg8U" target="_blank">Learn CSS</a>
+                    <a href="https://1drv.ms/b/s!AgjJOo8bTpyAdhPPLTfbmkaEZsU?e=Q9PTdu" target="_blank">Learn
+                        JavaScript</a>
+                    <a href="https://1drv.ms/b/s!AgjJOo8bTpyAd47ZObZKhH4BlmI?e=9hi8IT" target="_blank">Learn PHP</a>
+                    <a href="https://1drv.ms/b/s!AgjJOo8bTpyAebvh_N9bics4cVg?e=3XUA3N" target="_blank">Learn Node.js</a>
+
+
+                </div>
+                <div class="nested-navigation_item">
+                    <H2>LEARN PROGRAMMING</H2>
+                    <a href="https://1drv.ms/b/s!AgjJOo8bTpyAfx2BY1HUMUKfPFE?e=xtTAKq" target="_blank">Learn Python</a>
+                    <a href="https://1drv.ms/b/s!AgjJOo8bTpyAgQWLErBXHZojXM44?e=h8SfuU" target="_blank">Learn C</a>
+                    <a href="https://1drv.ms/b/s!AgjJOo8bTpyAgQH5tlNksgtbA0bL?e=fg8wl8" target="_blank">Learn C++</a>
+                    <a href="https://1drv.ms/b/s!AgjJOo8bTpyAgQRwk294Vr_Z1_bc?e=hKbgo7" target="_blank">Learn Java</a>
+                    <a href="https://1drv.ms/b/s!AgjJOo8bTpyAgQfsYcJVVJdHyqaN?e=97AcKM" target="_blank">Learn Kotlin</a>
+
+                </div>
+
+                <div class="nested-navigation_item">
+                    <H2>DATABASE MANAGEMENT SYSTEM</H2>
+                    <a href="https://1drv.ms/b/s!AgjJOo8bTpyAgQjKA1I6dv6_5oQ3?e=C1qOnX" target="_blank">Learn Microsoft
+                        SQL Server</a>
+                    <a href="https://1drv.ms/b/s!AgjJOo8bTpyAgQLYNw8kU2LpZox3?e=NWEfzB" target="_blank">Learn SQL</a>
+                    <a href="https://1drv.ms/b/s!AgjJOo8bTpyAgQOrlkhdoRcHix7E?e=6koctl" target="_blank">Learn MySQL</a>
+                    <a href="https://1drv.ms/b/s!AgjJOo8bTpyAgQYWtld54FWkzgBb?e=c6eEMV" target="_blank">Learn
+                        MonogoDB</a>
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+   <!-- Services Section -->
+<section class="nested-navigation-container nested-navigation_hidden" id="nested-navigation-container-services">
+    <div class="nested-navigation-container_close-btn" id="nested-navigation-close-Btn-services">
+        <!-- Close Button for Services Section -->
+        <button aria-label="Close Services Section">
+            <i class="fa-solid fa-xmark"></i>
+        </button>
+    </div>
+    <div class="nested-navigation-container_content">
+        <h1 style="color: white; font-size: 35px;  padding-bottom: 50px;">Services</h1>
+
+
+        <div class="nested-navigation-container_Content_data">
+            
+            <!-- First Semester -->
+            <!-- <div class="nested-navigation_item">
+                <h2>First Semester</h2>
+                <ul>
+                    <li><a href="#" target="_blank">Basic Mathematics</a></li>
+                    <li><a href="#" target="_blank">Basic Science (Physics & Chemistry)</a></li>
+                    <li><a href="#" target="_blank">Communication Skills (English)</a></li>
+                    <li><a href="#" target="_blank">Engineering Graphics</a></li>
+                    <li><a href="#" target="_blank">Engineering Workshop Practice</a></li>
+                    <li><a href="#" target="_blank">Fundamentals of ICT</a></li>
+                    <li><a href="#" target="_blank">Yoga and Meditation</a></li>
+                </ul>
+            </div> -->
+
+            <!-- Second Semester -->
+            <div class="nested-navigation_item">
+                <h2>Second Semester</h2>
+                <ul>
+                    <!-- <li><a href="#" target="_blank">Applied Mathematics</a></li>
+                    <li><a href="#" target="_blank">Basic Electrical and Electronics Engineering</a></li> -->
+                    <li><a href="https://www.codeblocks.org/downloads/" target="_blank">Programming in C (Code::Blocks)</a></li>
+                    <li><a href="https://ubuntu.com/download" target="_blank">Linux Basics (Ubuntu)</a></li>
+                    <!-- <li><a href="#" target="_blank">Professional Communication</a></li>
+                    <li><a href="#" target="_blank">Social and Life Skills</a></li> -->
+                    <li><a href="https://code.visualstudio.com/download" target="_blank">Web Page Designing (VS Code)</a></li>
+                </ul>
+            </div>
+
+            <!-- Third Semester -->
+            <div class="nested-navigation_item">
+                <h2>Third Semester</h2>
+                <ul>
+                    <li><a href="https://www.codeblocks.org/downloads/" target="_blank">Data Structure Using C (Code::Blocks)</a></li>
+                    <li><a href="https://www.mysql.com/downloads/" target="_blank">Database Management System (MySQL)</a></li>
+                    <li><a href="#" target="_blank">Digital Techniques</a></li>
+                    <li><a href="https://www.codeblocks.org/downloads/" target="_blank">Object-Oriented Programming Using C++ (Code::Blocks)</a></li>
+                    <li><a href="https://www.opengl.org/resources/libraries/glut/" target="_blank">Computer Graphics (OpenGL + GLUT)</a></li>
+                    <!-- <li><a href="#" target="_blank">Essence of Indian Constitution</a></li> -->
+                </ul>
+            </div>
+
+            <!-- Fourth Semester -->
+            <div class="nested-navigation_item">
+                <h2>Fourth Semester</h2>
+                <ul>
+                    <!-- <li><a href="#" target="_blank">Environmental Education and Sustainability</a></li> -->
+                    <li><a href="https://www.oracle.com/java/technologies/javase-jdk17-downloads.html" target="_blank">Java Programming (JDK 17)</a></li>
+                    <li><a href="#" target="_blank">Data Communication and Computer Network</a></li>
+                    <li><a href="https://www.keil.com/download/" target="_blank">Microprocessor Programming (Keil uVision)</a></li>
+                    <li><a href="https://www.python.org/downloads/" target="_blank">Python Programming (Python)</a></li>
+                    <li><a href="https://www.figma.com/downloads/" target="_blank">UI/UX Design (Figma)</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</section>
+
+    <!-- Exercises Section -->
+    <div class="nested-navigation-container nested-navigation_hidden" id="nested-navigation-container-exercises">
+        <div class="nested-navigation-container_close-btn" id="nested-navigation-close-Btn-exercises">
+            <!-- Close Button for Exercises Section -->
+            <button><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <div class="nested-navigation-container_content">
+            <h1 style="color:white;  padding-bottom: 50px;">Exercises</h1>
+            <div class="nested-navigation-container_Content_data">
+                <!-- Web Development Exercises -->
+                <div class="nested-navigation_item">
+                    <h2>First Semester (CO)</h2>
+                    <a href="sem1/ICT.html" target="_blank">Fundamentals of ICT (ICT-311001)</a>
+                    <a href="sem1/BMS.html" target="_blank">Basic Mathematics (BMS-311302)</a>
+                    <!-- <a href="">English syllabus (ENG-311303)</a> -->
+                    <a href="sem1/BSC.html" target="_blank">Basic Science (BSC-311305)</a>
+
+
+                </div>
+                <div class="nested-navigation_item">
+                    <h2>Second Semester (CO)</h2>
+                    <a href="sem2/BLP.html" target="_blank">Linux Basic (BLP-312001)</a>
+                    <a href="sem2/WPD.html" target="_blank"> Web Page Designing (WPD-312004)</a>
+                    <a href="sem2/AMS.html" target="_blank">Applied Mathematics (AMS-312301)</a>
+                    <a href="sem2/BEE.html" target="_blank">Basic Electrical and Electronic (BEE-312302)</a>
+                    <a href="sem2/PIC.html" target="_blank"> Programming in ‘C’ (PIC-312303)</a>
+
+                </div>
+                <div class="nested-navigation_item">
+                    <h2>Third Semester (CO)</h2>
+                    <a href="sem3/DSU.html" target="_blank">Data Structure using ‘C’ (DSU- 313301)</a>
+                    <a href="sem3/DBMS.html" target="_blank"> Database Management System (DMS-313302)</a>
+                    <a href="sem3/DTE.html" target="_blank"> Digital Techniques (DTE-313303)</a>
+                    <!-- <a href=""> Computer Graphics (CGR-313001)</a> -->
+                    <a href="sem3/OOP.html" target="_blank">Object-Oriented Programming using C++ (OOP-313304)</a>
+
+                </div>
+                <div class="nested-navigation_item">
+                    <h2>Fourth Semester (CO)</h2>
+                    <a href="sem4/PYT.HTML" target="_blank"> Python programming (PWP-314004)</a>
+                    <a href="">UI/UX Design (UID-314005)</a>
+                    <a href="sem4/EES.html" target="_blank">Environmental Education and Sustainability (EES-314301)</a>
+                    <a href="sem4/JPR.html" target="_blank">Java programming (JPR-314317)</a>
+                    <a href="sem4/DCCN.html" target="_blank">Data Communication and Computer Network (DCN-314318)</a>
+                    <a href="sem4/mic.html" target="_blank">Microprocessor Programming (MIC-314321)</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+    <!-- Link to your JavaScript file -->
+    <script src="script.js"></script>
+    <!-- BACKGROUND  -->
+    <main>
+        <section class="firstSection">
+
+            <div class="leftSection">
+                <div>
+                    <img src="lggp_logo.png" alt="">
+                </div>
+                Hi there! Welcome to <span class="blue"> LGGPStudent</span>
+                <div>Your hub for </div>
+
+                <span id="element"></span>
+            </div>
+            <div class="rightSection">
+                <img src="programming_01.gif" alt="Programming GIF" loading="lazy">
+            </div>
+        </section>
+    </main>
+    <script src="https://unpkg.com/typed.js@2.1.0/dist/typed.umd.js"></script>
+    <script>
+        var typed = new Typed('#element', {
+            strings: ['PRATICE EXAM', 'PROGRAMMING LANGUAGES', 'ALL SUBJECT STUDY MATERIALS', 'LANGUAGE PACKAGES'],
+            typeSpeed: 92,
+            loop: true
+        });
+    </script>
+    <!-- Footer Section -->
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-col">
+               <img src="grn.png.jpg" alt="l"
+               style="
+               width: 130px; /* Adjust the width as needed */
+               height: auto; /* Maintain aspect ratio */
+               display: block; /* Ensure the image is centered */
+               margin: 0 auto; /* Center the image horizontally */
+               border: 2px solid #ccc;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        transition: transform 0.3s ease;
+    "
+    onmouseover="this.style.transform='scale(1.1)'"
+    onmouseout="this.style.transform='scale(1)'">
+
+    <div class="footer-col">
+        <h4>Follow Us</h4>
+        <div class="social-links">
+            <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+            <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+            <a href="#" aria-label="Youtube"><i class="fa-brands fa-youtube"></i></a>
+            <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+        </div>
+    </div>
+            </div>
+            <div class="footer-col">
+                <img src="lggp_logo.png" alt="l"
+                style="
+                width: 130px; /* Adjust the width as needed */
+                height: auto; /* Maintain aspect ratio */
+                display: block; /* Ensure the image is centered */
+                margin: 0 auto; /* Center the image horizontally */
+                border: 2px solid #ccc;
+         border-radius: 10px;
+         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+         transition: transform 0.3s ease;
+     "
+     onmouseover="this.style.transform='scale(1.1)'"
+     onmouseout="this.style.transform='scale(1)'">
+                <h4>Follow Us</h4>
+                <div class="social-links">
+                    <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+                    <a href="#" aria-label="Youtube"><i class="fa-brands fa-youtube"></i></a>
+                    <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                </div>
+            </div>
+            <div class="footer-col">
+                <!-- <h4>Newsletter</h4> -->
+                <form class="newsletter-form">
+                    <!-- <input type="email" placeholder="Enter your email" required> -->
+                    <!-- <button type="submit">Subscribe</button> -->
+                    <img 
+                        src="vikrant.png.jpg" 
+                        alt="LGGP Logo" 
+                        style="
+                            width: 130px; /* Adjust the width as needed */
+                            height: auto; /* Maintain aspect ratio */
+                            display: block; /* Ensure the image is centered */
+                            margin: 0 auto; /* Center the image horizontally */
+                            border: 2px solid #ccc;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        transition: transform 0.3s ease;
+    "
+    onmouseover="this.style.transform='scale(1.1)'"
+    onmouseout="this.style.transform='scale(1)'"
+                    >
+                </form>
+                <div class="footer-col">
+                    <h4>Follow Us</h4>
+                    <div class="social-links">
+                        <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+                        <a href="#" aria-label="Youtube"><i class="fa-brands fa-youtube"></i></a>
+                        <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="copyright">&copy; 2025 Your Company. All rights reserved.</div>
+    </footer>
+</body>
+</html>

@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Design Thinking and UI/UX Quiz</title>
+    <link rel="icon" type="image/png" href="lggp_logo.png">
+    <style>
+        :root {
+            --bs-gray: #808080;
+            --bs-Lgray: #D3D3D3;
+            --bs-Cgray: #36454F;
+            --bs-Sblue: #ADD8E6;
+            --bs-gray-active: #b0b0b0;
+            --bs-blacke: #282A35;
+            --bs-login: #b4b4b4;
+            --bs-loginH: #969696;
+            --bs-Sblue-hover: #9cc7d6;
+            --bs-pure-black: #000000;
+            --bs-white: #ffffff;
+            --bs-neoWhite: #E7E9E8;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background: var(--bs-neoWhite);
+            color: var(--bs-blacke);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .quiz-container {
+            background: var(--bs-white);
+            padding: 25px;
+            width: 90%;
+            max-width: 500px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.1);
+            position: relative;
+        }
+
+        h2 {
+            margin-bottom: 20px;
+            color: var(--bs-Cgray);
+            font-size: 1.5rem;
+            max-height: 100px; /* Limit height for scrollable area */
+            overflow-y: auto; /* Add scrollbar if content overflows */
+            padding: 10px;
+            border: 1px solid var(--bs-Lgray);
+            border-radius: 5px;
+            text-align: left;
+        }
+
+        .timer {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: var(--bs-Sblue);
+            color: var(--bs-white);
+            padding: 8px 12px;
+            border-radius: 5px;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .progress {
+            width: 100%;
+            background: var(--bs-Lgray);
+            height: 10px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: var(--bs-Sblue);
+            border-radius: 5px;
+            transition: width 0.3s;
+        }
+
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        li {
+            margin: 10px 0;
+            text-align: left;
+        }
+
+        label {
+            cursor: pointer;
+            padding: 12px;
+            display: block;
+            background: var(--bs-Lgray);
+            border-radius: 5px;
+            transition: background 0.3s, transform 0.2s;
+            color: var(--bs-blacke);
+        }
+
+        label:hover {
+            background: var(--bs-gray-active);
+            transform: translateY(-2px);
+        }
+
+        input[type="radio"] {
+            display: none;
+        }
+
+        input[type="radio"]:checked + label {
+            background: var(--bs-Sblue);
+            color: var(--bs-white);
+            font-weight: bold;
+        }
+
+        button {
+            margin-top: 20px;
+            padding: 12px;
+            width: 100%;
+            border: none;
+            background: var(--bs-Sblue);
+            color: var(--bs-white);
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background 0.3s;
+        }
+
+        button:hover {
+            background: var(--bs-Sblue-hover);
+        }
+
+        .feedback {
+            margin-top: 15px;
+            font-size: 14px;
+            color: var(--bs-Cgray);
+            font-weight: bold;
+        }
+
+        .summary {
+            text-align: left;
+            margin-top: 20px;
+        }
+
+        .summary h3 {
+            color: var(--bs-Cgray);
+            margin-bottom: 10px;
+        }
+
+        .summary p {
+            margin: 5px 0;
+            color: var(--bs-blacke);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="quiz-container" id="quiz">
+        <div class="timer" id="timer">30:00</div>
+        <div class="progress">
+            <div class="progress-bar" id="progress-bar"></div>
+        </div>
+        <h2 id="question">Question 1</h2>
+        <ul>
+            <li>
+                <input type="radio" name="answer" id="a" class="answer">
+                <label for="a" id="a_text">Option A</label>
+            </li>
+            <li>
+                <input type="radio" name="answer" id="b" class="answer">
+                <label for="b" id="b_text">Option B</label>
+            </li>
+            <li>
+                <input type="radio" name="answer" id="c" class="answer">
+                <label for="c" id="c_text">Option C</label>
+            </li>
+            <li>
+                <input type="radio" name="answer" id="d" class="answer">
+                <label for="d" id="d_text">Option D</label>
+            </li>
+        </ul>
+        <div class="feedback" id="feedback"></div>
+        <button id="submit">Submit</button>
+    </div>
+
+    <script>
+        const quizData = [
+            {
+                question: "1. How many stages are there in design thinking?",
+                a: "4",
+                b: "5",
+                c: "6",
+                d: "7",
+                correct: "b"
+            },
+            {
+                question: "2. Which is the first stage of the design thinking process?",
+                a: "Ideate",
+                b: "Empathize",
+                c: "Prototype",
+                d: "Test",
+                correct: "b"
+            },
+            {
+                question: "3. What is the purpose of prototyping in design thinking?",
+                a: "To generate final products",
+                b: "To test and validate ideas",
+                c: "To replace the development phase",
+                d: "To collect user reviews",
+                correct: "b"
+            },
+            {
+                question: "4. What does UX stand for?",
+                a: "User Execution",
+                b: "User Experience",
+                c: "User Extension",
+                d: "User Exploration",
+                correct: "b"
+            },
+            {
+                question: "5. Which of the following best describes UI design?",
+                a: "It focuses on how a product looks and interacts visually",
+                b: "It focuses on how users feel when using a product",
+                c: "It deals only with backend development",
+                d: "It is unrelated to UX design",
+                correct: "a"
+            },
+            {
+                question: "6. What is the key difference between UI and UX?",
+                a: "UI is about usability, UX is about design",
+                b: "UI is about design, UX is about usability",
+                c: "UI focuses on coding, UX focuses on research",
+                d: "There is no difference",
+                correct: "b"
+            },
+            {
+                question: "7. What is the main goal of user research?",
+                a: "To develop code",
+                b: "To understand user needs",
+                c: "To improve hardware performance",
+                d: "To create random surveys",
+                correct: "b"
+            },
+            {
+                question: "8. Which is a qualitative user research method?",
+                a: "Surveys",
+                b: "Interviews",
+                c: "A/B Testing",
+                d: "Heatmaps",
+                correct: "b"
+            },
+            {
+                question: "9. What does user persona represent?",
+                a: "The backend database of a system",
+                b: "A fictional representation of a target user",
+                c: "A UI component",
+                d: "The coding framework used in development",
+                correct: "b"
+            },
+            {
+                question: "10. Which tool is commonly used for user research and analysis?",
+                a: "Photoshop",
+                b: "FigJam",
+                c: "AutoCAD",
+                d: "SQL",
+                correct: "b"
+            },
+            {
+                question: "11. What is storyboarding used for?",
+                a: "Coding a website",
+                b: "Planning a user's journey through a product",
+                c: "Writing technical documentation",
+                d: "Designing backend databases",
+                correct: "b"
+            },
+            {
+                question: "12. Which of the following is NOT a principle of design?",
+                a: "Contrast",
+                b: "Alignment",
+                c: "Spacing",
+                d: "Compilation",
+                correct: "d"
+            },
+            {
+                question: "13. What is a primary focus of Gestalt principles in UI design?",
+                a: "Backend development",
+                b: "How users perceive and group visual elements",
+                c: "Writing CSS code",
+                d: "Creating databases",
+                correct: "b"
+            },
+            {
+                question: "14. What is Figma used for?",
+                a: "Video editing",
+                b: "UI/UX design and prototyping",
+                c: "Data analysis",
+                d: "Backend development",
+                correct: "b"
+            },
+            {
+                question: "15. What is the main purpose of visual communication in UI/UX?",
+                a: "Enhancing text readability",
+                b: "Improving database performance",
+                c: "Making designs more engaging and user-friendly",
+                d: "Writing JavaScript code",
+                correct: "c"
+            },
+            {
+                question: "16. What does UX design focus on?",
+                a: "User interaction with the product",
+                b: "Writing HTML code",
+                c: "Product sales and marketing",
+                d: "Only aesthetic appeal",
+                correct: "a"
+            },
+            {
+                question: "17. What is a key feature of gamification in UI/UX?",
+                a: "Adding game-like elements to improve user engagement",
+                b: "Using only gaming-based interfaces",
+                c: "Developing games only",
+                d: "Focusing solely on animations",
+                correct: "a"
+            },
+            {
+                question: "18. What are micro-animations used for in UI design?",
+                a: "Enhancing small interactive elements for better user experience",
+                b: "Playing long videos in the background",
+                c: "Replacing text with moving objects",
+                d: "Creating complex game graphics",
+                correct: "a"
+            },
+            {
+                question: "19. What is the function of navigation in UI design?",
+                a: "To help users move easily within an application",
+                b: "To store backend data",
+                c: "To create complex graphics",
+                d: "To develop APIs",
+                correct: "a"
+            },
+            {
+                question: "20. What is a design system?",
+                a: "A set of design rules and components used for consistency",
+                b: "A coding library",
+                c: "A testing tool",
+                d: "A database model",
+                correct: "a"
+            },
+            {
+                question: "21. What does wireframing help with?",
+                a: "Structuring the layout of a UI",
+                b: "Writing backend logic",
+                c: "Designing animations",
+                d: "Creating databases",
+                correct: "a"
+            },
+            {
+                question: "22. What is the difference between low and high-fidelity wireframes?",
+                a: "Low fidelity is simple sketches, high fidelity includes detailed design elements",
+                b: "Low fidelity is for developers, high fidelity is for designers",
+                c: "There is no difference",
+                d: "High fidelity is only used in coding",
+                correct: "a"
+            },
+            {
+                question: "23. What tool is commonly used for prototyping in UI/UX?",
+                a: "Figma",
+                b: "WordPress",
+                c: "Notepad",
+                d: "Excel",
+                correct: "a"
+            },
+            {
+                question: "24. What is the purpose of A/B testing in UX?",
+                a: "Comparing two versions of a design to determine which performs better",
+                b: "Testing API responses",
+                c: "Debugging a website",
+                d: "Writing SQL queries",
+                correct: "a"
+            },
+            {
+                question: "25. What is meant by 'responsive design'?",
+                a: "A design that adjusts to different screen sizes and devices",
+                b: "A design that loads quickly",
+                c: "A design for gaming applications only",
+                d: "A design that requires high-speed internet",
+                correct: "a"
+            },
+            {
+                question: "26. What is usability testing?",
+                a: "Evaluating how easily users can interact with a design",
+                b: "Testing backend performance",
+                c: "Measuring internet speed",
+                d: "Debugging JavaScript code",
+                correct: "a"
+            },
+            {
+                question: "27. What does CTA stand for in UI/UX design?",
+                a: "Call To Action",
+                b: "Central Text Alignment",
+                c: "Core Template Arrangement",
+                d: "Clickable Text Area",
+                correct: "a"
+            },
+            {
+                question: "28. Which factor is most important for good UX?",
+                a: "Ease of use",
+                b: "Complex animations",
+                c: "Large amounts of content",
+                d: "Hidden navigation",
+                correct: "a"
+            },
+            {
+                question: "29. What is the final stage of the design thinking process?",
+                a: "Ideate",
+                b: "Prototype",
+                c: "Test",
+                d: "Develop",
+                correct: "c"
+            },
+            {
+                question: "30. What is a heatmap used for in UI/UX?",
+                a: "Tracking user interactions on a webpage",
+                b: "Storing data",
+                c: "Designing color schemes",
+                d: "Creating animations",
+                correct: "a"
+            }
+        ];
+
+        let currentQuiz = 0;
+        let score = 0;
+        let timeLeft = 30 * 60;
+
+        const timerEl = document.getElementById("timer");
+        const quizEl = document.getElementById("quiz");
+        const questionEl = document.getElementById("question");
+        const answerEls = document.querySelectorAll(".answer");
+        const a_text = document.getElementById("a_text");
+        const b_text = document.getElementById("b_text");
+        const c_text = document.getElementById("c_text");
+        const d_text = document.getElementById("d_text");
+        const submitBtn = document.getElementById("submit");
+        const feedbackEl = document.getElementById("feedback");
+        const progressBar = document.getElementById("progress-bar");
+
+        function loadQuiz() {
+            deselectAnswers();
+            feedbackEl.textContent = "";
+            const currentQuizData = quizData[currentQuiz];
+            questionEl.innerHTML = `${currentQuizData.question}`;
+            a_text.innerText = currentQuizData.a;
+            b_text.innerText = currentQuizData.b;
+            c_text.innerText = currentQuizData.c;
+            d_text.innerText = currentQuizData.d;
+            updateProgressBar();
+        }
+
+        function deselectAnswers() {
+            answerEls.forEach(answerEl => answerEl.checked = false);
+        }
+
+        function getSelected() {
+            let answer;
+            answerEls.forEach(answerEl => {
+                if (answerEl.checked) {
+                    answer = answerEl.id;
+                }
+            });
+            return answer;
+        }
+
+        function updateProgressBar() {
+            const progress = ((currentQuiz + 1) / quizData.length) * 100;
+            progressBar.style.width = `${progress}%`;
+        }
+
+        function startTimer() {
+            const countdown = setInterval(() => {
+                let minutes = Math.floor(timeLeft / 60);
+                let seconds = timeLeft % 60;
+                timerEl.textContent = `${minutes}:${seconds < 10 ? "0" : ""}${seconds}`;
+                timeLeft--;
+                if (timeLeft < 0) {
+                    clearInterval(countdown);
+                    autoSubmit();
+                }
+            }, 1000);
+        }
+
+        function autoSubmit() {
+            quizEl.innerHTML = `<h2>Time's up! You scored ${score}/${quizData.length}</h2>
+                                <div class="summary">
+                                    <h3>Summary:</h3>
+                                    <p>Correct Answers: ${score}</p>
+                                    <p>Incorrect Answers: ${quizData.length - score}</p>
+                                </div>
+                                <button onclick="location.reload()">Restart</button>`;
+        }
+
+        submitBtn.addEventListener("click", () => {
+            const answer = getSelected();
+            if (answer) {
+                if (answer === quizData[currentQuiz].correct) {
+                    score++;
+                    feedbackEl.textContent = "Correct!";
+                    feedbackEl.style.color = "green";
+                } else {
+                    feedbackEl.textContent = "Incorrect!";
+                    feedbackEl.style.color = "red";
+                }
+                currentQuiz++;
+                if (currentQuiz < quizData.length) {
+                    setTimeout(loadQuiz, 1000);
+                } else {
+                    quizEl.innerHTML = `<h2>You scored ${score}/${quizData.length}</h2>
+                                        <div class="summary">
+                                            <h3>Summary:</h3>
+                                            <p>Correct Answers: ${score}</p>
+                                            <p>Incorrect Answers: ${quizData.length - score}</p>
+                                        </div>
+                                        <button onclick="location.reload()">Restart</button>`;
+                }
+            }
+        });
+
+        // Initialize quiz
+        loadQuiz();
+        startTimer();
+    </script>
+</body>
+</html>

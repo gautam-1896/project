@@ -1,0 +1,696 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Java Programming Quiz</title>
+    <link rel="icon" type="image/png" href="lggp_logo.png">
+    <style>
+        :root {
+            --bs-gray: #808080;
+            --bs-Lgray: #D3D3D3;
+            --bs-Cgray: #36454F;
+            --bs-Sblue: #ADD8E6;
+            --bs-gray-active: #b0b0b0;
+            --bs-blacke: #282A35;
+            --bs-login: #b4b4b4;
+            --bs-loginH: #969696;
+            --bs-Sblue-hover: #9cc7d6;
+            --bs-pure-black: #000000;
+            --bs-white: #ffffff;
+            --bs-neoWhite: #E7E9E8;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background: var(--bs-neoWhite);
+            color: var(--bs-blacke);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .quiz-container {
+            background: var(--bs-white);
+            padding: 25px;
+            width: 90%;
+            max-width: 500px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.1);
+            position: relative;
+        }
+
+        h2 {
+            margin-bottom: 20px;
+            color: var(--bs-Cgray);
+            font-size: 1.5rem;
+            max-height: 100px; /* Limit height for scrollable area */
+            overflow-y: auto; /* Add scrollbar if content overflows */
+            padding: 10px;
+            border: 1px solid var(--bs-Lgray);
+            border-radius: 5px;
+            text-align: left;
+        }
+
+        .timer {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: var(--bs-Sblue);
+            color: var(--bs-white);
+            padding: 8px 12px;
+            border-radius: 5px;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .progress {
+            width: 100%;
+            background: var(--bs-Lgray);
+            height: 10px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: var(--bs-Sblue);
+            border-radius: 5px;
+            transition: width 0.3s;
+        }
+
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        li {
+            margin: 10px 0;
+            text-align: left;
+        }
+
+        label {
+            cursor: pointer;
+            padding: 12px;
+            display: block;
+            background: var(--bs-Lgray);
+            border-radius: 5px;
+            transition: background 0.3s, transform 0.2s;
+            color: var(--bs-blacke);
+        }
+
+        label:hover {
+            background: var(--bs-gray-active);
+            transform: translateY(-2px);
+        }
+
+        input[type="radio"] {
+            display: none;
+        }
+
+        input[type="radio"]:checked + label {
+            background: var(--bs-Sblue);
+            color: var(--bs-white);
+            font-weight: bold;
+        }
+
+        button {
+            margin-top: 20px;
+            padding: 12px;
+            width: 100%;
+            border: none;
+            background: var(--bs-Sblue);
+            color: var(--bs-white);
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background 0.3s;
+        }
+
+        button:hover {
+            background: var(--bs-Sblue-hover);
+        }
+
+        .feedback {
+            margin-top: 15px;
+            font-size: 14px;
+            color: var(--bs-Cgray);
+            font-weight: bold;
+        }
+
+        .summary {
+            text-align: left;
+            margin-top: 20px;
+        }
+
+        .summary h3 {
+            color: var(--bs-Cgray);
+            margin-bottom: 10px;
+        }
+
+        .summary p {
+            margin: 5px 0;
+            color: var(--bs-blacke);
+        }
+
+        pre {
+            background: var(--bs-Lgray);
+            padding: 10px;
+            border-radius: 5px;
+            text-align: left;
+            font-family: monospace;
+            font-size: 14px;
+            overflow-x: auto;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="quiz-container" id="quiz">
+        <div class="timer" id="timer">30:00</div>
+        <div class="progress">
+            <div class="progress-bar" id="progress-bar"></div>
+        </div>
+        <h2 id="question">Question 1</h2>
+        <ul>
+            <li>
+                <input type="radio" name="answer" id="a" class="answer">
+                <label for="a" id="a_text">Option A</label>
+            </li>
+            <li>
+                <input type="radio" name="answer" id="b" class="answer">
+                <label for="b" id="b_text">Option B</label>
+            </li>
+            <li>
+                <input type="radio" name="answer" id="c" class="answer">
+                <label for="c" id="c_text">Option C</label>
+            </li>
+            <li>
+                <input type="radio" name="answer" id="d" class="answer">
+                <label for="d" id="d_text">Option D</label>
+            </li>
+        </ul>
+        <div class="feedback" id="feedback"></div>
+        <button id="submit">Submit</button>
+    </div>
+
+    <script>
+        const quizData = [
+            {
+                question: "1. Which of the following is NOT a Java feature?",
+                a: "Platform-independent",
+                b: "Object-oriented",
+                c: "Manual memory management",
+                d: "Robust",
+                correct: "c"
+            },
+            {
+                question: "2. What is the default value of a boolean variable in Java?",
+                a: "true",
+                b: "false",
+                c: "0",
+                d: "null",
+                correct: "b"
+            },
+            {
+                question: "3. Which of the following is NOT a valid Java identifier?",
+                a: "_variableName",
+                b: "123variable",
+                c: "variable123",
+                d: "$myVar",
+                correct: "b"
+            },
+            {
+                question: "4. What is the size of the int data type in Java?",
+                a: "2 bytes",
+                b: "4 bytes",
+                c: "8 bytes",
+                d: "16 bytes",
+                correct: "b"
+            },
+            {
+                question: "5. Which keyword is used to define a class in Java?",
+                a: "class",
+                b: "Class",
+                c: "struct",
+                d: "object",
+                correct: "a"
+            },
+            {
+                question: "6. What is the default value of a reference variable in Java?",
+                a: "0",
+                b: "null",
+                c: "Undefined",
+                d: "Garbage value",
+                correct: "b"
+            },
+            {
+                question: "7. Which of the following access modifiers allows access from any class?",
+                a: "private",
+                b: "protected",
+                c: "public",
+                d: "default",
+                correct: "c"
+            },
+            {
+                question: "8. Which operator is used to allocate memory for an object in Java?",
+                a: "malloc",
+                b: "new",
+                c: "alloc",
+                d: "create",
+                correct: "b"
+            },
+            {
+                question: "9. Which of the following is used to handle exceptions in Java?",
+                a: "try-catch",
+                b: "exception-handler",
+                c: "error-resolver",
+                d: "catch-try",
+                correct: "a"
+            },
+            {
+                question: "10. What is the parent class of all Java classes?",
+                a: "String",
+                b: "Object",
+                c: "Class",
+                d: "Super",
+                correct: "b"
+            },
+            {
+                question: "11. Which keyword is used to prevent method overriding?",
+                a: "static",
+                b: "final",
+                c: "const",
+                d: "abstract",
+                correct: "b"
+            },
+            {
+                question: "12. What is the return type of the main() method in Java?",
+                a: "void",
+                b: "int",
+                c: "String",
+                d: "None",
+                correct: "a"
+            },
+            {
+                question: "13. Which method is used to start a thread in Java?",
+                a: "run()",
+                b: "execute()",
+                c: "start()",
+                d: "init()",
+                correct: "c"
+            },
+            {
+                question: "14. Which of the following is NOT a valid type of inheritance in Java?",
+                a: "Single",
+                b: "Multiple",
+                c: "Multilevel",
+                d: "Hybrid",
+                correct: "b"
+            },
+            {
+                question: "15. How do you implement an interface in Java?",
+                a: "Using extends keyword",
+                b: "Using implements keyword",
+                c: "Using interface keyword",
+                d: "Using inherit keyword",
+                correct: "b"
+            },
+            {
+                question: "16. Which of the following is an example of a wrapper class?",
+                a: "int",
+                b: "Integer",
+                c: "float",
+                d: "double",
+                correct: "b"
+            },
+            {
+                question: "17. What is the default package in Java?",
+                a: "java.lang",
+                b: "java.util",
+                c: "java.io",
+                d: "None of the above",
+                correct: "a"
+            },
+            {
+                question: "18. Which method is used to read input from the user in Java?",
+                a: "read()",
+                b: "input()",
+                c: "next()",
+                d: "scanner()",
+                correct: "c"
+            },
+            {
+                question: "19. Which JDBC driver type is fully written in Java?",
+                a: "Type-1",
+                b: "Type-2",
+                c: "Type-3",
+                d: "Type-4",
+                correct: "d"
+            },
+            {
+                question: "20. Which class in Java is used for socket programming?",
+                a: "Socket",
+                b: "Connection",
+                c: "Thread",
+                d: "URL",
+                correct: "a"
+            },
+            {
+                question: "21. What will be the output of the following code?",
+                code: `class A {
+    void display() {
+        System.out.println("Class A");
+    }
+}
+class B extends A {
+    void display() {
+        System.out.println("Class B");
+    }
+}
+public class Main {
+    public static void main(String[] args) {
+        A obj = new B();
+        obj.display();
+    }
+}`,
+                a: "Class A",
+                b: "Class B",
+                c: "Compilation Error",
+                d: "Runtime Error",
+                correct: "b"
+            },
+            {
+                question: "22. What will be the output of the following code?",
+                code: `class Test {
+    static int count = 0;
+    Test() {
+        count++;
+    }
+    public static void main(String[] args) {
+        Test t1 = new Test();
+        Test t2 = new Test();
+        System.out.println(Test.count);
+    }
+}`,
+                a: "0",
+                b: "1",
+                c: "2",
+                d: "Compilation Error",
+                correct: "c"
+            },
+            {
+                question: "23. What will be the output of the following code?",
+                code: `class A {
+    A() {
+        System.out.println("A");
+    }
+}
+class B extends A {
+    B() {
+        System.out.println("B");
+    }
+}
+public class Main {
+    public static void main(String[] args) {
+        B obj = new B();
+    }
+}`,
+                a: "A",
+                b: "B",
+                c: "A B",
+                d: "B A",
+                correct: "c"
+            },
+            {
+                question: "24. What will be the output of the following code?",
+                code: `class A {
+    void show() {
+        System.out.println("A");
+    }
+}
+class B extends A {
+    void show() {
+        System.out.println("B");
+    }
+}
+public class Main {
+    public static void main(String[] args) {
+        A obj = new B();
+        obj.show();
+    }
+}`,
+                a: "A",
+                b: "B",
+                c: "Compilation Error",
+                d: "Runtime Error",
+                correct: "b"
+            },
+            {
+                question: "25. What will be the output of the following code?",
+                code: `class A {
+    static {
+        System.out.println("Static Block A");
+    }
+    {
+        System.out.println("Instance Block A");
+    }
+    A() {
+        System.out.println("Constructor A");
+    }
+}
+public class Main {
+    public static void main(String[] args) {
+        A obj = new A();
+    }
+}`,
+                a: "Static Block A\nInstance Block A\nConstructor A",
+                b: "Instance Block A\nStatic Block A\nConstructor A",
+                c: "Static Block A\nConstructor A\nInstance Block A",
+                d: "Compilation Error",
+                correct: "a"
+            },
+            {
+                question: "26. What will be the output of the following code?",
+                code: `class A {
+    int x = 10;
+}
+class B extends A {
+    int x = 20;
+}
+public class Main {
+    public static void main(String[] args) {
+        A obj = new B();
+        System.out.println(obj.x);
+    }
+}`,
+                a: "10",
+                b: "20",
+                c: "Compilation Error",
+                d: "Runtime Error",
+                correct: "a"
+            },
+            {
+                question: "27. What will be the output of the following code?",
+                code: `class A {
+    void show() {
+        System.out.println("A");
+    }
+}
+class B extends A {
+    void show() {
+        System.out.println("B");
+    }
+}
+public class Main {
+    public static void main(String[] args) {
+        A obj = new A();
+        obj.show();
+    }
+}`,
+                a: "A",
+                b: "B",
+                c: "Compilation Error",
+                d: "Runtime Error",
+                correct: "a"
+            },
+            {
+                question: "28. What will be the output of the following code?",
+                code: `class A {
+    static int x = 10;
+    static {
+        x = 20;
+    }
+    public static void main(String[] args) {
+        System.out.println(x);
+    }
+}`,
+                a: "10",
+                b: "20",
+                c: "Compilation Error",
+                d: "Runtime Error",
+                correct: "b"
+            },
+            {
+                question: "29. What will be the output of the following code?",
+                code: `class A {
+    static void show() {
+        System.out.println("A");
+    }
+}
+class B extends A {
+    static void show() {
+        System.out.println("B");
+    }
+}
+public class Main {
+    public static void main(String[] args) {
+        A obj = new B();
+        obj.show();
+    }
+}`,
+                a: "A",
+                b: "B",
+                c: "Compilation Error",
+                d: "Runtime Error",
+                correct: "a"
+            },
+            {
+                question: "30. What will be the output of the following code?",
+                code: `class A {
+    int x = 10;
+    {
+        x = 20;
+    }
+    A() {
+        x = 30;
+    }
+}
+public class Main {
+    public static void main(String[] args) {
+        A obj = new A();
+        System.out.println(obj.x);
+    }
+}`,
+                a: "10",
+                b: "20",
+                c: "30",
+                d: "Compilation Error",
+                correct: "c"
+            }
+        ];
+
+        let currentQuiz = 0;
+        let score = 0;
+        let timeLeft = 30 * 60;
+
+        const timerEl = document.getElementById("timer");
+        const quizEl = document.getElementById("quiz");
+        const questionEl = document.getElementById("question");
+        const answerEls = document.querySelectorAll(".answer");
+        const a_text = document.getElementById("a_text");
+        const b_text = document.getElementById("b_text");
+        const c_text = document.getElementById("c_text");
+        const d_text = document.getElementById("d_text");
+        const submitBtn = document.getElementById("submit");
+        const feedbackEl = document.getElementById("feedback");
+        const progressBar = document.getElementById("progress-bar");
+
+        function loadQuiz() {
+            deselectAnswers();
+            feedbackEl.textContent = "";
+            const currentQuizData = quizData[currentQuiz];
+            if (currentQuizData.code) {
+                questionEl.innerHTML = `${currentQuizData.question}<pre>${currentQuizData.code}</pre>`;
+            } else {
+                questionEl.innerHTML = `${currentQuizData.question}`;
+            }
+            a_text.innerText = currentQuizData.a;
+            b_text.innerText = currentQuizData.b;
+            c_text.innerText = currentQuizData.c;
+            d_text.innerText = currentQuizData.d;
+            updateProgressBar();
+        }
+        function deselectAnswers() {
+            answerEls.forEach(answerEl => answerEl.checked = false);
+        }
+
+        function getSelected() {
+            let answer;
+            answerEls.forEach(answerEl => {
+                if (answerEl.checked) {
+                    answer = answerEl.id;
+                }
+            });
+            return answer;
+        }
+
+        function updateProgressBar() {
+            const progress = ((currentQuiz + 1) / quizData.length) * 100;
+            progressBar.style.width = `${progress}%`;
+        }
+
+        function startTimer() {
+            const countdown = setInterval(() => {
+                let minutes = Math.floor(timeLeft / 60);
+                let seconds = timeLeft % 60;
+                timerEl.textContent = `${minutes}:${seconds < 10 ? "0" : ""}${seconds}`;
+                timeLeft--;
+                if (timeLeft < 0) {
+                    clearInterval(countdown);
+                    autoSubmit();
+                }
+            }, 1000);
+        }
+
+        function autoSubmit() {
+            quizEl.innerHTML = `<h2>Time's up! You scored ${score}/${quizData.length}</h2>
+                                <div class="summary">
+                                    <h3>Summary:</h3>
+                                    <p>Correct Answers: ${score}</p>
+                                    <p>Incorrect Answers: ${quizData.length - score}</p>
+                                </div>
+                                <button onclick="location.reload()">Restart</button>`;
+        }
+
+        submitBtn.addEventListener("click", () => {
+            const answer = getSelected();
+            if (answer) {
+                if (answer === quizData[currentQuiz].correct) {
+                    score++;
+                    feedbackEl.textContent = "Correct!";
+                    feedbackEl.style.color = "green";
+                } else {
+                    feedbackEl.textContent = "Incorrect!";
+                    feedbackEl.style.color = "red";
+                }
+                currentQuiz++;
+                if (currentQuiz < quizData.length) {
+                    setTimeout(loadQuiz, 1000);
+                } else {
+                    quizEl.innerHTML = `<h2>You scored ${score}/${quizData.length}</h2>
+                                        <div class="summary">
+                                            <h3>Summary:</h3>
+                                            <p>Correct Answers: ${score}</p>
+                                            <p>Incorrect Answers: ${quizData.length - score}</p>
+                                        </div>
+                                        <button onclick="location.reload()">Restart</button>`;
+                }
+            }
+        });
+
+        // Initialize quiz
+        loadQuiz();
+        startTimer();
+    </script>
+</body>
+</html>

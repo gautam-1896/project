@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>8086 Microprocessor Quiz</title>
+    <link rel="icon" type="image/png" href="lggp_logo.png">
+    <style>
+        :root {
+            --bs-gray: #808080;
+            --bs-Lgray: #D3D3D3;
+            --bs-Cgray: #36454F;
+            --bs-Sblue: #ADD8E6;
+            --bs-gray-active: #b0b0b0;
+            --bs-blacke: #282A35;
+            --bs-login: #b4b4b4;
+            --bs-loginH: #969696;
+            --bs-Sblue-hover: #9cc7d6;
+            --bs-pure-black: #000000;
+            --bs-white: #ffffff;
+            --bs-neoWhite: #E7E9E8;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background: var(--bs-neoWhite);
+            color: var(--bs-blacke);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .quiz-container {
+            background: var(--bs-white);
+            padding: 25px;
+            width: 90%;
+            max-width: 500px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.1);
+            position: relative;
+        }
+
+        h2 {
+            margin-bottom: 20px;
+            color: var(--bs-Cgray);
+            font-size: 1.5rem;
+            max-height: 100px; /* Limit height for scrollable area */
+            overflow-y: auto; /* Add scrollbar if content overflows */
+            padding: 10px;
+            border: 1px solid var(--bs-Lgray);
+            border-radius: 5px;
+            text-align: left;
+        }
+
+        .timer {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: var(--bs-Sblue);
+            color: var(--bs-white);
+            padding: 8px 12px;
+            border-radius: 5px;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .progress {
+            width: 100%;
+            background: var(--bs-Lgray);
+            height: 10px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: var(--bs-Sblue);
+            border-radius: 5px;
+            transition: width 0.3s;
+        }
+
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        li {
+            margin: 10px 0;
+            text-align: left;
+        }
+
+        label {
+            cursor: pointer;
+            padding: 12px;
+            display: block;
+            background: var(--bs-Lgray);
+            border-radius: 5px;
+            transition: background 0.3s, transform 0.2s;
+            color: var(--bs-blacke);
+        }
+
+        label:hover {
+            background: var(--bs-gray-active);
+            transform: translateY(-2px);
+        }
+
+        input[type="radio"] {
+            display: none;
+        }
+
+        input[type="radio"]:checked + label {
+            background: var(--bs-Sblue);
+            color: var(--bs-white);
+            font-weight: bold;
+        }
+
+        button {
+            margin-top: 20px;
+            padding: 12px;
+            width: 100%;
+            border: none;
+            background: var(--bs-Sblue);
+            color: var(--bs-white);
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background 0.3s;
+        }
+
+        button:hover {
+            background: var(--bs-Sblue-hover);
+        }
+
+        .feedback {
+            margin-top: 15px;
+            font-size: 14px;
+            color: var(--bs-Cgray);
+            font-weight: bold;
+        }
+
+        .summary {
+            text-align: left;
+            margin-top: 20px;
+        }
+
+        .summary h3 {
+            color: var(--bs-Cgray);
+            margin-bottom: 10px;
+        }
+
+        .summary p {
+            margin: 5px 0;
+            color: var(--bs-blacke);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="quiz-container" id="quiz">
+        <div class="timer" id="timer">30:00</div>
+        <div class="progress">
+            <div class="progress-bar" id="progress-bar"></div>
+        </div>
+        <h2 id="question">Question 1</h2>
+        <ul>
+            <li>
+                <input type="radio" name="answer" id="a" class="answer">
+                <label for="a" id="a_text">Option A</label>
+            </li>
+            <li>
+                <input type="radio" name="answer" id="b" class="answer">
+                <label for="b" id="b_text">Option B</label>
+            </li>
+            <li>
+                <input type="radio" name="answer" id="c" class="answer">
+                <label for="c" id="c_text">Option C</label>
+            </li>
+            <li>
+                <input type="radio" name="answer" id="d" class="answer">
+                <label for="d" id="d_text">Option D</label>
+            </li>
+        </ul>
+        <div class="feedback" id="feedback"></div>
+        <button id="submit">Submit</button>
+    </div>
+
+    <script>
+        const quizData = [
+            {
+                question: "1. How many address lines are there in the 8086 microprocessor?",
+                a: "16",
+                b: "20",
+                c: "24",
+                d: "32",
+                correct: "b"
+            },
+            {
+                question: "2. Which unit in the 8086 microprocessor is responsible for fetching instructions?",
+                a: "Execution Unit",
+                b: "Bus Interface Unit",
+                c: "ALU",
+                d: "Control Unit",
+                correct: "b"
+            },
+            {
+                question: "3. What is the default segment register used for stack operations?",
+                a: "CS",
+                b: "SS",
+                c: "DS",
+                d: "ES",
+                correct: "b"
+            },
+            {
+                question: "4. The effective address in 8086 is calculated using which of the following formulae?",
+                a: "Base Address + Offset",
+                b: "Segment Address × 10H + Offset",
+                c: "Offset × 10H + Segment Address",
+                d: "Segment Address + Offset",
+                correct: "b"
+            },
+            {
+                question: "5. Which tool is used to convert assembly language programs into machine code?",
+                a: "Editor",
+                b: "Assembler",
+                c: "Linker",
+                d: "Debugger",
+                correct: "b"
+            },
+            {
+                question: "6. Which of the following assembler directives is used to define a procedure?",
+                a: "PROC",
+                b: "MACRO",
+                c: "SEGMENT",
+                d: "DB",
+                correct: "a"
+            },
+            {
+                question: "7. The 8086 instruction used to load a value into a segment register is?",
+                a: "MOV",
+                b: "LDS",
+                c: "LEA",
+                d: "PUSH",
+                correct: "a"
+            },
+            {
+                question: "8. What is the addressing mode used in the instruction MOV AX, [BX]?",
+                a: "Immediate Addressing",
+                b: "Direct Addressing",
+                c: "Register Indirect Addressing",
+                d: "Indexed Addressing",
+                correct: "c"
+            },
+            {
+                question: "9. Which flag is set when an arithmetic operation results in a carry out of the most significant bit?",
+                a: "Zero Flag",
+                b: "Carry Flag",
+                c: "Parity Flag",
+                d: "Sign Flag",
+                correct: "b"
+            },
+            {
+                question: "10. What is the purpose of the HLT instruction in 8086?",
+                a: "Halt the processor",
+                b: "Load data into a register",
+                c: "Perform subtraction",
+                d: "Rotate bits",
+                correct: "a"
+            },
+            {
+                question: "11. The instruction CMP AX, BX performs which operation?",
+                a: "Adds AX and BX",
+                b: "Compares AX and BX",
+                c: "Multiplies AX by BX",
+                d: "Moves BX into AX",
+                correct: "b"
+            },
+            {
+                question: "12. The LOOP instruction in 8086 executes based on the value of which register?",
+                a: "AX",
+                b: "CX",
+                c: "DX",
+                d: "SI",
+                correct: "b"
+            },
+            {
+                question: "13. What is the size of a general-purpose register in 8086?",
+                a: "4-bit",
+                b: "8-bit",
+                c: "16-bit",
+                d: "32-bit",
+                correct: "c"
+            },
+            {
+                question: "14. In 8086, which instruction is used to call a procedure?",
+                a: "CALL",
+                b: "RET",
+                c: "JMP",
+                d: "LOOP",
+                correct: "a"
+            },
+            {
+                question: "15. Which of the following instructions is used to return from a procedure?",
+                a: "RET",
+                b: "CALL",
+                c: "JMP",
+                d: "PUSH",
+                correct: "a"
+            },
+            {
+                question: "16. Which type of loop uses LOOP instruction in 8086?",
+                a: "Unconditional loop",
+                b: "Counter-controlled loop",
+                c: "Condition-controlled loop",
+                d: "Infinite loop",
+                correct: "b"
+            },
+            {
+                question: "17. The INT instruction in 8086 is used for?",
+                a: "Calling an interrupt",
+                b: "Jumping to a new instruction",
+                c: "Storing data in memory",
+                d: "Transferring data between registers",
+                correct: "a"
+            },
+            {
+                question: "18. What is the primary difference between macros and procedures in 8086?",
+                a: "Macros take parameters, procedures do not",
+                b: "Procedures use CALL/RET, macros do not",
+                c: "Procedures execute faster than macros",
+                d: "Macros require more memory than procedures",
+                correct: "b"
+            },
+            {
+                question: "19. Which instruction is used to swap the contents of two registers?",
+                a: "SWAP",
+                b: "MOV",
+                c: "XCHG",
+                d: "EXG",
+                correct: "c"
+            },
+            {
+                question: "20. What is the default segment register used for code execution in 8086?",
+                a: "SS",
+                b: "DS",
+                c: "CS",
+                d: "ES",
+                correct: "c"
+            },
+            {
+                question: "21. Which of the following is a 16-bit register in 8086?",
+                a: "AL",
+                b: "AH",
+                c: "AX",
+                d: "BL",
+                correct: "c"
+            },
+            {
+                question: "22. Which instruction is used to move data from memory to a register?",
+                a: "MOV",
+                b: "ADD",
+                c: "SUB",
+                d: "MUL",
+                correct: "a"
+            },
+            {
+                question: "23. What is the purpose of the PUSH instruction in 8086?",
+                a: "Push data onto the stack",
+                b: "Pop data from the stack",
+                c: "Move data between registers",
+                d: "Perform arithmetic operations",
+                correct: "a"
+            },
+            {
+                question: "24. Which of the following is a valid 8086 instruction?",
+                a: "MOV AX, 1234H",
+                b: "ADD AX, BX",
+                c: "SUB CX, DX",
+                d: "All of the above",
+                correct: "d"
+            },
+            {
+                question: "25. What is the purpose of the POP instruction in 8086?",
+                a: "Push data onto the stack",
+                b: "Pop data from the stack",
+                c: "Move data between registers",
+                d: "Perform arithmetic operations",
+                correct: "b"
+            },
+            {
+                question: "26. Which of the following is a valid 8086 addressing mode?",
+                a: "Immediate",
+                b: "Direct",
+                c: "Register Indirect",
+                d: "All of the above",
+                correct: "d"
+            },
+            {
+                question: "27. What is the purpose of the NOP instruction in 8086?",
+                a: "No operation",
+                b: "Move data between registers",
+                c: "Perform arithmetic operations",
+                d: "Jump to a new instruction",
+                correct: "a"
+            },
+            {
+                question: "28. Which of the following is a valid 8086 interrupt?",
+                a: "INT 21H",
+                b: "INT 10H",
+                c: "INT 13H",
+                d: "All of the above",
+                correct: "d"
+            },
+            {
+                question: "29. What is the purpose of the IRET instruction in 8086?",
+                a: "Return from an interrupt",
+                b: "Jump to a new instruction",
+                c: "Move data between registers",
+                d: "Perform arithmetic operations",
+                correct: "a"
+            },
+            {
+                question: "30. Which of the following is a valid 8086 instruction?",
+                a: "MOV AX, [BX]",
+                b: "ADD AX, BX",
+                c: "SUB CX, DX",
+                d: "All of the above",
+                correct: "d"
+            }
+        ];
+
+        let currentQuiz = 0;
+        let score = 0;
+        let timeLeft = 30 * 60;
+
+        const timerEl = document.getElementById("timer");
+        const quizEl = document.getElementById("quiz");
+        const questionEl = document.getElementById("question");
+        const answerEls = document.querySelectorAll(".answer");
+        const a_text = document.getElementById("a_text");
+        const b_text = document.getElementById("b_text");
+        const c_text = document.getElementById("c_text");
+        const d_text = document.getElementById("d_text");
+        const submitBtn = document.getElementById("submit");
+        const feedbackEl = document.getElementById("feedback");
+        const progressBar = document.getElementById("progress-bar");
+
+        function loadQuiz() {
+            deselectAnswers();
+            feedbackEl.textContent = "";
+            const currentQuizData = quizData[currentQuiz];
+            questionEl.innerHTML = `${currentQuizData.question}`;
+            a_text.innerText = currentQuizData.a;
+            b_text.innerText = currentQuizData.b;
+            c_text.innerText = currentQuizData.c;
+            d_text.innerText = currentQuizData.d;
+            updateProgressBar();
+        }
+
+        function deselectAnswers() {
+            answerEls.forEach(answerEl => answerEl.checked = false);
+        }
+
+        function getSelected() {
+            let answer;
+            answerEls.forEach(answerEl => {
+                if (answerEl.checked) {
+                    answer = answerEl.id;
+                }
+            });
+            return answer;
+        }
+
+        function updateProgressBar() {
+            const progress = ((currentQuiz + 1) / quizData.length) * 100;
+            progressBar.style.width = `${progress}%`;
+        }
+
+        function startTimer() {
+            const countdown = setInterval(() => {
+                let minutes = Math.floor(timeLeft / 60);
+                let seconds = timeLeft % 60;
+                timerEl.textContent = `${minutes}:${seconds < 10 ? "0" : ""}${seconds}`;
+                timeLeft--;
+                if (timeLeft < 0) {
+                    clearInterval(countdown);
+                    autoSubmit();
+                }
+            }, 1000);
+        }
+
+        function autoSubmit() {
+            quizEl.innerHTML = `<h2>Time's up! You scored ${score}/${quizData.length}</h2>
+                                <div class="summary">
+                                    <h3>Summary:</h3>
+                                    <p>Correct Answers: ${score}</p>
+                                    <p>Incorrect Answers: ${quizData.length - score}</p>
+                                </div>
+                                <button onclick="location.reload()">Restart</button>`;
+        }
+
+        submitBtn.addEventListener("click", () => {
+            const answer = getSelected();
+            if (answer) {
+                if (answer === quizData[currentQuiz].correct) {
+                    score++;
+                    feedbackEl.textContent = "Correct!";
+                    feedbackEl.style.color = "green";
+                } else {
+                    feedbackEl.textContent = "Incorrect!";
+                    feedbackEl.style.color = "red";
+                }
+                currentQuiz++;
+                if (currentQuiz < quizData.length) {
+                    setTimeout(loadQuiz, 1000);
+                } else {
+                    quizEl.innerHTML = `<h2>You scored ${score}/${quizData.length}</h2>
+                                        <div class="summary">
+                                            <h3>Summary:</h3>
+                                            <p>Correct Answers: ${score}</p>
+                                            <p>Incorrect Answers: ${quizData.length - score}</p>
+                                        </div>
+                                        <button onclick="location.reload()">Restart</button>`;
+                }
+            }
+        });
+
+        // Initialize quiz
+        loadQuiz();
+        startTimer();
+    </script>
+</body>
+</html>

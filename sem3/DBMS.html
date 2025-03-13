@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DBMS Quiz</title>
+    <link rel="icon" type="image/png" href="lggp_logo.png">
+    <style>
+        :root {
+            --bs-gray: #808080;
+            --bs-Lgray: #D3D3D3;
+            --bs-Cgray: #36454F;
+            --bs-Sblue: #ADD8E6;
+            --bs-gray-active: #b0b0b0;
+            --bs-blacke: #282A35;
+            --bs-login: #b4b4b4;
+            --bs-loginH: #969696;
+            --bs-Sblue-hover: #9cc7d6;
+            --bs-pure-black: #000000;
+            --bs-white: #ffffff;
+            --bs-neoWhite: #E7E9E8;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background: var(--bs-neoWhite);
+            color: var(--bs-blacke);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .quiz-container {
+            background: var(--bs-white);
+            padding: 25px;
+            width: 90%;
+            max-width: 500px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.1);
+            position: relative;
+        }
+
+        h2 {
+            margin-bottom: 20px;
+            color: var(--bs-Cgray);
+            font-size: 1.5rem;
+            max-height: 100px; /* Limit height for scrollable area */
+            overflow-y: auto; /* Add scrollbar if content overflows */
+            padding: 10px;
+            border: 1px solid var(--bs-Lgray);
+            border-radius: 5px;
+            text-align: left;
+        }
+
+        .timer {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: var(--bs-Sblue);
+            color: var(--bs-white);
+            padding: 8px 12px;
+            border-radius: 5px;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .progress {
+            width: 100%;
+            background: var(--bs-Lgray);
+            height: 10px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: var(--bs-Sblue);
+            border-radius: 5px;
+            transition: width 0.3s;
+        }
+
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        li {
+            margin: 10px 0;
+            text-align: left;
+        }
+
+        label {
+            cursor: pointer;
+            padding: 12px;
+            display: block;
+            background: var(--bs-Lgray);
+            border-radius: 5px;
+            transition: background 0.3s, transform 0.2s;
+            color: var(--bs-blacke);
+        }
+
+        label:hover {
+            background: var(--bs-gray-active);
+            transform: translateY(-2px);
+        }
+
+        input[type="radio"] {
+            display: none;
+        }
+
+        input[type="radio"]:checked + label {
+            background: var(--bs-Sblue);
+            color: var(--bs-white);
+            font-weight: bold;
+        }
+
+        button {
+            margin-top: 20px;
+            padding: 12px;
+            width: 100%;
+            border: none;
+            background: var(--bs-Sblue);
+            color: var(--bs-white);
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background 0.3s;
+        }
+
+        button:hover {
+            background: var(--bs-Sblue-hover);
+        }
+
+        .feedback {
+            margin-top: 15px;
+            font-size: 14px;
+            color: var(--bs-Cgray);
+            font-weight: bold;
+        }
+
+        .summary {
+            text-align: left;
+            margin-top: 20px;
+        }
+
+        .summary h3 {
+            color: var(--bs-Cgray);
+            margin-bottom: 10px;
+        }
+
+        .summary p {
+            margin: 5px 0;
+            color: var(--bs-blacke);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="quiz-container" id="quiz">
+        <div class="timer" id="timer">30:00</div>
+        <div class="progress">
+            <div class="progress-bar" id="progress-bar"></div>
+        </div>
+        <h2 id="question">Question 1</h2>
+        <ul>
+            <li>
+                <input type="radio" name="answer" id="a" class="answer">
+                <label for="a" id="a_text">Option A</label>
+            </li>
+            <li>
+                <input type="radio" name="answer" id="b" class="answer">
+                <label for="b" id="b_text">Option B</label>
+            </li>
+            <li>
+                <input type="radio" name="answer" id="c" class="answer">
+                <label for="c" id="c_text">Option C</label>
+            </li>
+            <li>
+                <input type="radio" name="answer" id="d" class="answer">
+                <label for="d" id="d_text">Option D</label>
+            </li>
+        </ul>
+        <div class="feedback" id="feedback"></div>
+        <button id="submit">Submit</button>
+    </div>
+
+    <script>
+        const quizData = [
+            
+        {
+                question: "1. What is a database?",
+                a: "A collection of related data",
+                b: "A hardware device",
+                c: "A programming language",
+                d: "An operating system",
+                correct: "a"
+            },
+            {
+                question: "2. Which of the following is NOT a type of database model?",
+                a: "Hierarchical",
+                b: "Relational",
+                c: "Object-Oriented",
+                d: "Linear",
+                correct: "d"
+            },
+            {
+                question: "3. What is the primary key used for?",
+                a: "To define the data type of a column",
+                b: "To uniquely identify a row in a table",
+                c: "To delete duplicate records",
+                d: "To create an index",
+                correct: "b"
+            },
+            {
+                question: "4. Which SQL command is used to retrieve data from a database?",
+                a: "UPDATE",
+                b: "DELETE",
+                c: "SELECT",
+                d: "INSERT",
+                correct: "c"
+            },
+            {
+                question: "5. What does the term 'ACID' refer to in database transactions?",
+                a: "Authorization, Classification, Isolation, Database",
+                b: "Access, Control, Integrity, Database",
+                c: "Atomicity, Consistency, Isolation, Durability",
+                d: "Audit, Control, Integrity, Durability",
+                correct: "c"
+            },
+            {
+                question: "6. What is the purpose of normalization in databases?",
+                a: "To create more tables",
+                b: "To add constraints",
+                c: "To remove redundant data",
+                d: "To speed up data retrieval",
+                correct: "c"
+            },
+            {
+                question: "7. Which SQL statement is used to remove a table from the database?",
+                a: "DROP TABLE",
+                b: "DELETE TABLE",
+                c: "REMOVE TABLE",
+                d: "CLEAR TABLE",
+                correct: "a"
+            },
+            {
+                question: "8. What does DML stand for?",
+                a: "Data Management Language",
+                b: "Data Manipulation Language",
+                c: "Database Management Language",
+                d: "Dynamic Manipulation Language",
+                correct: "b"
+            },
+            {
+                question: "9. What is a foreign key?",
+                a: "A key used for indexing a table",
+                b: "A key that references a primary key in another table",
+                c: "A primary key",
+                d: "A key that encrypts the database",
+                correct: "b"
+            },
+            {
+                question: "10. Which SQL clause is used to filter results?",
+                a: "ORDER BY",
+                b: "WHERE",
+                c: "GROUP BY",
+                d: "HAVING",
+                correct: "b"
+            },
+            {
+                question: "11. What is an index in a database?",
+                a: "A way to optimize query performance",
+                b: "A primary key",
+                c: "A type of stored procedure",
+                d: "A type of database schema",
+                correct: "a"
+            },
+            {
+                question: "12. What is a view in SQL?",
+                a: "A stored procedure",
+                b: "An index",
+                c: "A virtual table based on a query",
+                d: "A physical table",
+                correct: "c"
+            },
+            {
+                question: "13. What is a transaction in a database?",
+                a: "A backup process",
+                b: "A sequence of operations performed as a single unit",
+                c: "A stored procedure",
+                d: "A user session",
+                correct: "b"
+            },
+            {
+                question: "14. What is a trigger in SQL?",
+                a: "A special type of stored procedure that runs automatically",
+                b: "An index",
+                c: "A function",
+                d: "A type of view",
+                correct: "a"
+            },
+            {
+                question: "15. What is the purpose of PL/SQL?",
+                a: "To create views",
+                b: "To create indexes",
+                c: "To extend SQL with procedural capabilities",
+                d: "To replace SQL",
+                correct: "c"
+            },
+            {
+                question: "16. What will be the output of the following SQL query?\n\n```sql\nSELECT COUNT(*) FROM Employees WHERE Salary > 50000;\n```",
+                a: "Total number of employees",
+                b: "Count of employees earning more than 50000",
+                c: "0",
+                d: "Syntax error",
+                correct: "b"
+            },
+            {
+                question: "17. What does the following SQL statement do?\n\n```sql\nDELETE FROM Customers WHERE City = 'New York';\n```",
+                a: "Deletes all records from Customers",
+                b: "Deletes all customers from New York",
+                c: "Removes the 'City' column",
+                d: "Throws an error",
+                correct: "b"
+            },
+            {
+                question: "18. What will be the result of the following SQL query?\n\n```sql\nSELECT MAX(Salary) FROM Employees;\n```",
+                a: "The highest salary from the Employees table",
+                b: "The total salary of all employees",
+                c: "A list of all salaries",
+                d: "An error message",
+                correct: "a"
+            },
+            {
+                question: "19. What will be the output of this SQL query?\n\n```sql\nSELECT name FROM Students WHERE age BETWEEN 18 AND 25;\n```",
+                a: "All student names with age exactly 18 and 25",
+                b: "All student names with age between 18 and 25 (inclusive)",
+                c: "All student names with age less than 18",
+                d: "Syntax error",
+                correct: "b"
+            },
+            {
+                question: "20. What will be the result of the following SQL query?\n\n```sql\nSELECT AVG(Salary) FROM Employees WHERE Department = 'HR';\n```",
+                a: "Average salary of employees in the HR department",
+                b: "Total salary of HR employees",
+                c: "Maximum salary of HR employees",
+                d: "Minimum salary of HR employees",
+                correct: "a"
+            },
+            {
+                question: "21. What is the purpose of the following SQL query?\n\n```sql\nSELECT * FROM Products ORDER BY Price DESC LIMIT 5;\n```",
+                a: "Fetches the 5 cheapest products",
+                b: "Fetches the 5 most expensive products",
+                c: "Fetches all products sorted by price",
+                d: "Throws an error",
+                correct: "b"
+            },
+            {
+                question: "22. What will the following SQL query do?\n\n```sql\nUPDATE Employees SET Salary = Salary * 1.10 WHERE Department = 'IT';\n```",
+                a: "Increases salary by 10% for all employees",
+                b: "Increases salary by 10% for IT employees",
+                c: "Sets salary to 1.10 for IT employees",
+                d: "Throws an error",
+                correct: "b"
+            },
+            {
+                question: "23. What is the purpose of the following SQL query?\n\n```sql\nCREATE INDEX idx_salary ON Employees(Salary);\n```",
+                a: "Deletes all salary records",
+                b: "Creates an index on the Salary column for faster queries",
+                c: "Inserts a new column in Employees table",
+                d: "Throws an error",
+                correct: "b"
+            },
+            {
+                question: "24. What will be the output of this SQL query?\n\n```sql\nSELECT Department, COUNT(*) FROM Employees GROUP BY Department;\n```",
+                a: "List of all departments",
+                b: "Total employees in each department",
+                c: "Names of employees in each department",
+                d: "Throws an error",
+                correct: "b"
+            },
+            {
+                question: "25. What does the following SQL query return?\n\n```sql\nSELECT name FROM Students WHERE name LIKE 'A%';\n```",
+                a: "All student names that start with 'A'",
+                b: "All student names that contain 'A'",
+                c: "All student names that end with 'A'",
+                d: "Throws an error",
+                correct: "a"
+            },
+            {
+                question: "26. What is the result of executing this SQL query?\n\n```sql\nSELECT * FROM Orders WHERE OrderDate > '2023-01-01' AND OrderDate < '2023-12-31';\n```",
+                a: "Orders placed in 2023",
+                b: "Orders placed before 2023",
+                c: "Orders placed after 2023",
+                d: "Throws an error",
+                correct: "a"
+            },
+            {
+                question: "27. What does the following SQL query do?\n\n```sql\nALTER TABLE Employees ADD COLUMN Age INT;\n```",
+                a: "Deletes the Age column from Employees table",
+                b: "Adds a new column named Age of type INT",
+                c: "Renames the Employees table",
+                d: "Throws an error",
+                correct: "b"
+            },
+            {
+                question: "28. What will be the result of this SQL query?\n\n```sql\nSELECT EmployeeID, Name FROM Employees WHERE Department IN ('HR', 'IT');\n```",
+                a: "Employees belonging to HR and IT departments",
+                b: "Employees from all departments",
+                c: "Only employees from the HR department",
+                d: "Throws an error",
+                correct: "a"
+            },
+            {
+                question: "29. What does this SQL query return?\n\n```sql\nSELECT DISTINCT City FROM Customers;\n```",
+                a: "List of all unique cities from the Customers table",
+                b: "All cities including duplicates",
+                c: "The first city in the Customers table",
+                d: "Throws an error",
+                correct: "a"
+            },
+            {
+                question: "30. What will this SQL query output?\n\n```sql\nSELECT COUNT(DISTINCT Department) FROM Employees;\n```",
+                a: "Total number of employees",
+                b: "Number of unique departments in Employees table",
+                c: "Total salary of all employees",
+                d: "Throws an error",
+                correct: "b"
+            },
+            // {
+            //     question: "31. What is the function of this SQL statement?\n\n```sql\nGRANT SELECT ON Customers TO User1;\n```",
+            //     a: "Gives User1 permission to delete the Customers table",
+            //     b: "Gives User1 permission to update the Customers table",
+            //     c: "Gives User1 permission to view the Customers table",
+            //     d: "Throws an error",
+            //     correct: "c"
+            // }
+            // Your quiz data remains unchanged
+        ];
+
+        let currentQuiz = 0;
+        let score = 0;
+        let timeLeft = 30 * 60;
+
+        const timerEl = document.getElementById("timer");
+        const quizEl = document.getElementById("quiz");
+        const questionEl = document.getElementById("question");
+        const answerEls = document.querySelectorAll(".answer");
+        const a_text = document.getElementById("a_text");
+        const b_text = document.getElementById("b_text");
+        const c_text = document.getElementById("c_text");
+        const d_text = document.getElementById("d_text");
+        const submitBtn = document.getElementById("submit");
+        const feedbackEl = document.getElementById("feedback");
+        const progressBar = document.getElementById("progress-bar");
+
+        function loadQuiz() {
+            deselectAnswers();
+            feedbackEl.textContent = "";
+            const currentQuizData = quizData[currentQuiz];
+            questionEl.innerHTML = `${currentQuizData.question}`;
+            a_text.innerText = currentQuizData.a;
+            b_text.innerText = currentQuizData.b;
+            c_text.innerText = currentQuizData.c;
+            d_text.innerText = currentQuizData.d;
+            updateProgressBar();
+        }
+
+        function deselectAnswers() {
+            answerEls.forEach(answerEl => answerEl.checked = false);
+        }
+
+        function getSelected() {
+            let answer;
+            answerEls.forEach(answerEl => {
+                if (answerEl.checked) {
+                    answer = answerEl.id;
+                }
+            });
+            return answer;
+        }
+
+        function updateProgressBar() {
+            const progress = ((currentQuiz + 1) / quizData.length) * 100;
+            progressBar.style.width = `${progress}%`;
+        }
+
+        function startTimer() {
+            const countdown = setInterval(() => {
+                let minutes = Math.floor(timeLeft / 60);
+                let seconds = timeLeft % 60;
+                timerEl.textContent = `${minutes}:${seconds < 10 ? "0" : ""}${seconds}`;
+                timeLeft--;
+                if (timeLeft < 0) {
+                    clearInterval(countdown);
+                    autoSubmit();
+                }
+            }, 1000);
+        }
+
+        function autoSubmit() {
+            quizEl.innerHTML = `<h2>Time's up! You scored ${score}/${quizData.length}</h2>
+                                <div class="summary">
+                                    <h3>Summary:</h3>
+                                    <p>Correct Answers: ${score}</p>
+                                    <p>Incorrect Answers: ${quizData.length - score}</p>
+                                </div>
+                                <button onclick="location.reload()">Restart</button>`;
+        }
+
+        submitBtn.addEventListener("click", () => {
+            const answer = getSelected();
+            if (answer) {
+                if (answer === quizData[currentQuiz].correct) {
+                    score++;
+                    feedbackEl.textContent = "Correct!";
+                    feedbackEl.style.color = "green";
+                } else {
+                    feedbackEl.textContent = "Incorrect!";
+                    feedbackEl.style.color = "red";
+                }
+                currentQuiz++;
+                if (currentQuiz < quizData.length) {
+                    setTimeout(loadQuiz, 1000);
+                } else {
+                    quizEl.innerHTML = `<h2>You scored ${score}/${quizData.length}</h2>
+                                        <div class="summary">
+                                            <h3>Summary:</h3>
+                                            <p>Correct Answers: ${score}</p>
+                                            <p>Incorrect Answers: ${quizData.length - score}</p>
+                                        </div>
+                                        <button onclick="location.reload()">Restart</button>`;
+                }
+            }
+        });
+
+        // Initialize quiz
+        loadQuiz();
+        startTimer();
+    </script>
+</body>
+</html>

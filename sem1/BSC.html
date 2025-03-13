@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BCS Quiz</title>
+    <link rel="icon" type="image/png" href="lggp_logo.png">
+    <style>
+        :root {
+            --bs-gray: #808080;
+            --bs-Lgray: #D3D3D3;
+            --bs-Cgray: #36454F;
+            --bs-Sblue: #ADD8E6;
+            --bs-gray-active: #b0b0b0;
+            --bs-blacke: #282A35;
+            --bs-login: #b4b4b4;
+            --bs-loginH: #969696;
+            --bs-Sblue-hover: #9cc7d6;
+            --bs-pure-black: #000000;
+            --bs-white: #ffffff;
+            --bs-neoWhite: #E7E9E8;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background: var(--bs-neoWhite);
+            color: var(--bs-blacke);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .quiz-container {
+            background: var(--bs-white);
+            padding: 25px;
+            width: 90%;
+            max-width: 500px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.1);
+            position: relative;
+        }
+
+        h2 {
+            margin-bottom: 20px;
+            color: var(--bs-Cgray);
+            font-size: 1.5rem;
+        }
+
+        .timer {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: var(--bs-Sblue);
+            color: var(--bs-white);
+            padding: 8px 12px;
+            border-radius: 5px;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .progress {
+            width: 100%;
+            background: var(--bs-Lgray);
+            height: 10px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: var(--bs-Sblue);
+            border-radius: 5px;
+            transition: width 0.3s;
+        }
+
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        li {
+            margin: 10px 0;
+            text-align: left;
+        }
+
+        label {
+            cursor: pointer;
+            padding: 12px;
+            display: block;
+            background: var(--bs-Lgray);
+            border-radius: 5px;
+            transition: background 0.3s, transform 0.2s;
+            color: var(--bs-blacke);
+        }
+
+        label:hover {
+            background: var(--bs-gray-active);
+            transform: translateY(-2px);
+        }
+
+        input[type="radio"] {
+            display: none;
+        }
+
+        input[type="radio"]:checked + label {
+            background: var(--bs-Sblue);
+            color: var(--bs-white);
+            font-weight: bold;
+        }
+
+        button {
+            margin-top: 20px;
+            padding: 12px;
+            width: 100%;
+            border: none;
+            background: var(--bs-Sblue);
+            color: var(--bs-white);
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background 0.3s;
+        }
+
+        button:hover {
+            background: var(--bs-Sblue-hover);
+        }
+
+        .feedback {
+            margin-top: 15px;
+            font-size: 14px;
+            color: var(--bs-Cgray);
+            font-weight: bold;
+        }
+
+        .summary {
+            text-align: left;
+            margin-top: 20px;
+        }
+
+        .summary h3 {
+            color: var(--bs-Cgray);
+            margin-bottom: 10px;
+        }
+
+        .summary p {
+            margin: 5px 0;
+            color: var(--bs-blacke);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="quiz-container" id="quiz">
+        <div class="timer" id="timer">30:00</div>
+        <div class="progress">
+            <div class="progress-bar" id="progress-bar"></div>
+        </div>
+        <h2 id="question">Question 1</h2>
+        <ul>
+            <li>
+                <input type="radio" name="answer" id="a" class="answer">
+                <label for="a" id="a_text">Option A</label>
+            </li>
+            <li>
+                <input type="radio" name="answer" id="b" class="answer">
+                <label for="b" id="b_text">Option B</label>
+            </li>
+            <li>
+                <input type="radio" name="answer" id="c" class="answer">
+                <label for="c" id="c_text">Option C</label>
+            </li>
+            <li>
+                <input type="radio" name="answer" id="d" class="answer">
+                <label for="d" id="d_text">Option D</label>
+            </li>
+        </ul>
+        <div class="feedback" id="feedback"></div>
+        <button id="submit">Submit</button>
+    </div>
+
+    <script>
+        const quizData = [
+            {
+                question: "1. The SI unit of force is:",
+                a: "Joule",
+                b: "Newton",
+                c: "Watt",
+                d: "Pascal",
+                correct: "b"
+            },
+            {
+                question: "2. The acceleration due to gravity on Earth is approximately:",
+                a: "9.8 m/s²",
+                b: "8.5 m/s²",
+                c: "10.2 m/s²",
+                d: "12.0 m/s²",
+                correct: "a"
+            },
+            {
+                question: "3. The law of inertia is also known as:",
+                a: "Newton's second law",
+                b: "Newton's third law",
+                c: "Newton's first law",
+                d: "Law of gravitation",
+                correct: "c"
+            },
+            {
+                question: "4. The rate of change of velocity is called:",
+                a: "Speed",
+                b: "Acceleration",
+                c: "Momentum",
+                d: "Displacement",
+                correct: "b"
+            },
+            {
+                question: "5. Work is said to be done when:",
+                a: "There is no force applied",
+                b: "There is no displacement",
+                c: "Force is applied but no movement occurs",
+                d: "Force is applied and displacement occurs",
+                correct: "d"
+            },
+            {
+                question: "6. The SI unit of work is:",
+                a: "Newton",
+                b: "Joule",
+                c: "Watt",
+                d: "Erg",
+                correct: "b"
+            },
+            {
+                question: "7. The force that opposes the motion of an object is:",
+                a: "Friction",
+                b: "Magnetic force",
+                c: "Electric force",
+                d: "Nuclear force",
+                correct: "a"
+            },
+            {
+                question: "8. Which of the following is a vector quantity?",
+                a: "Speed",
+                b: "Work",
+                c: "Acceleration",
+                d: "Distance",
+                correct: "c"
+            },
+            {
+                question: "9. The momentum of an object is the product of:",
+                a: "Mass and velocity",
+                b: "Mass and acceleration",
+                c: "Mass and force",
+                d: "Mass and displacement",
+                correct: "a"
+            },
+            {
+                question: "10. What is the unit of power?",
+                a: "Watt",
+                b: "Joule",
+                c: "Newton",
+                d: "Pascal",
+                correct: "a"
+            },
+            {
+                question: "11. Kinetic energy depends on:",
+                a: "Mass only",
+                b: "Velocity only",
+                c: "Mass and velocity",
+                d: "Force and displacement",
+                correct: "c"
+            },
+            {
+                question: "12. Potential energy is given by:",
+                a: "mv²",
+                b: "mgh",
+                c: "½mv²",
+                d: "mgv",
+                correct: "b"
+            },
+            {
+                question: "13. Which of the following is a non-renewable energy source?",
+                a: "Solar energy",
+                b: "Wind energy",
+                c: "Coal",
+                d: "Geothermal energy",
+                correct: "c"
+            },
+            {
+                question: "14. The unit of frequency is:",
+                a: "Hertz",
+                b: "Joule",
+                c: "Newton",
+                d: "Watt",
+                correct: "a"
+            },
+            {
+                question: "15. The speed of light in vacuum is approximately:",
+                a: "3 × 10⁶ m/s",
+                b: "3 × 10⁷ m/s",
+                c: "3 × 10⁸ m/s",
+                d: "3 × 10⁹ m/s",
+                correct: "c"
+            },
+            {
+                question: "16. The force acting on a body in circular motion is:",
+                a: "Centrifugal force",
+                b: "Centripetal force",
+                c: "Gravitational force",
+                d: "Electrostatic force",
+                correct: "b"
+            },
+            {
+                question: "17. The ability to do work is called:",
+                a: "Power",
+                b: "Energy",
+                c: "Momentum",
+                d: "Force",
+                correct: "b"
+            },
+            {
+                question: "18. The work done by a force is negative when:",
+                a: "Force and displacement are in the same direction",
+                b: "Force and displacement are perpendicular",
+                c: "Force is opposite to displacement",
+                d: "No displacement occurs",
+                correct: "c"
+            },
+            {
+                question: "19. Newton’s third law states that:",
+                a: "Every action has an equal and opposite reaction",
+                b: "Force is equal to mass times acceleration",
+                c: "An object in motion stays in motion",
+                d: "Energy can neither be created nor destroyed",
+                correct: "a"
+            },
+            {
+                question: "20. The SI unit of pressure is:",
+                a: "Newton",
+                b: "Joule",
+                c: "Pascal",
+                d: "Watt",
+                correct: "c"
+            },
+            {
+                question: "21. The force of attraction between any two masses is called:",
+                a: "Magnetic force",
+                b: "Electrostatic force",
+                c: "Gravitational force",
+                d: "Nuclear force",
+                correct: "c"
+            },
+            {
+                question: "22. What is the acceleration of an object in free fall?",
+                a: "9.8 m/s²",
+                b: "0 m/s²",
+                c: "Depends on mass",
+                d: "10.5 m/s²",
+                correct: "a"
+            },
+            {
+                question: "23. What type of energy is stored in a stretched rubber band?",
+                a: "Kinetic energy",
+                b: "Potential energy",
+                c: "Thermal energy",
+                d: "Chemical energy",
+                correct: "b"
+            },
+            {
+                question: "24. The energy possessed by moving objects is called:",
+                a: "Potential energy",
+                b: "Chemical energy",
+                c: "Kinetic energy",
+                d: "Nuclear energy",
+                correct: "c"
+            },
+            {
+                question: "25. Which of the following obeys the law of conservation of energy?",
+                a: "A pendulum in motion",
+                b: "A car with frictionless wheels",
+                c: "A bouncing ball with no air resistance",
+                d: "All of the above",
+                correct: "d"
+            },
+            {
+                question: "26. When an object moves in a circular path at constant speed, its velocity:",
+                a: "Remains constant",
+                b: "Changes due to change in direction",
+                c: "Becomes zero",
+                d: "Increases continuously",
+                correct: "b"
+            },
+            {
+                question: "27. Which of these is an example of a scalar quantity?",
+                a: "Velocity",
+                b: "Force",
+                c: "Acceleration",
+                d: "Time",
+                correct: "d"
+            },
+            {
+                question: "28. The impulse of an object is given by:",
+                a: "Force × Distance",
+                b: "Force × Time",
+                c: "Mass × Velocity",
+                d: "Mass × Acceleration",
+                correct: "b"
+            },
+            {
+                question: "29. Which of the following is a non-conservative force?",
+                a: "Gravity",
+                b: "Friction",
+                c: "Elastic force",
+                d: "Magnetic force",
+                correct: "b"
+            },
+            {
+                question: "30. The unit of impulse is:",
+                a: "N·s",
+                b: "Joule",
+                c: "Watt",
+                d: "Newton",
+                correct: "a"
+            }
+        ];
+
+        let currentQuiz = 0;
+        let score = 0;
+        let timeLeft = 30 * 60;
+
+        const timerEl = document.getElementById("timer");
+        const quizEl = document.getElementById("quiz");
+        const questionEl = document.getElementById("question");
+        const answerEls = document.querySelectorAll(".answer");
+        const a_text = document.getElementById("a_text");
+        const b_text = document.getElementById("b_text");
+        const c_text = document.getElementById("c_text");
+        const d_text = document.getElementById("d_text");
+        const submitBtn = document.getElementById("submit");
+        const feedbackEl = document.getElementById("feedback");
+        const progressBar = document.getElementById("progress-bar");
+
+        function loadQuiz() {
+            deselectAnswers();
+            feedbackEl.textContent = "";
+            const currentQuizData = quizData[currentQuiz];
+            questionEl.innerText = currentQuizData.question;
+            a_text.innerText = currentQuizData.a;
+            b_text.innerText = currentQuizData.b;
+            c_text.innerText = currentQuizData.c;
+            d_text.innerText = currentQuizData.d;
+            updateProgressBar();
+        }
+
+        function deselectAnswers() {
+            answerEls.forEach(answerEl => answerEl.checked = false);
+        }
+
+        function getSelected() {
+            let answer;
+            answerEls.forEach(answerEl => {
+                if (answerEl.checked) {
+                    answer = answerEl.id;
+                }
+            });
+            return answer;
+        }
+
+        function updateProgressBar() {
+            const progress = ((currentQuiz + 1) / quizData.length) * 100;
+            progressBar.style.width = `${progress}%`;
+        }
+
+        function startTimer() {
+            const countdown = setInterval(() => {
+                let minutes = Math.floor(timeLeft / 60);
+                let seconds = timeLeft % 60;
+                timerEl.textContent = `${minutes}:${seconds < 10 ? "0" : ""}${seconds}`;
+                timeLeft--;
+                if (timeLeft < 0) {
+                    clearInterval(countdown);
+                    autoSubmit();
+                }
+            }, 1000);
+        }
+
+        function autoSubmit() {
+            quizEl.innerHTML = `<h2>Time's up! You scored ${score}/${quizData.length}</h2>
+                                <div class="summary">
+                                    <h3>Summary:</h3>
+                                    <p>Correct Answers: ${score}</p>
+                                    <p>Incorrect Answers: ${quizData.length - score}</p>
+                                </div>
+                                <button onclick="location.reload()">Restart</button>`;
+        }
+
+        submitBtn.addEventListener("click", () => {
+            const answer = getSelected();
+            if (answer) {
+                if (answer === quizData[currentQuiz].correct) {
+                    score++;
+                    feedbackEl.textContent = "Correct!";
+                    feedbackEl.style.color = "green";
+                } else {
+                    feedbackEl.textContent = "Incorrect!";
+                    feedbackEl.style.color = "red";
+                }
+                currentQuiz++;
+                if (currentQuiz < quizData.length) {
+                    setTimeout(loadQuiz, 1000);
+                } else {
+                    quizEl.innerHTML = `<h2>You scored ${score}/${quizData.length}</h2>
+                                        <div class="summary">
+                                            <h3>Summary:</h3>
+                                            <p>Correct Answers: ${score}</p>
+                                            <p>Incorrect Answers: ${quizData.length - score}</p>
+                                        </div>
+                                        <button onclick="location.reload()">Restart</button>`;
+                }
+            }
+        });
+
+        loadQuiz();
+        startTimer();
+    </script>
+
+</body>
+</html>

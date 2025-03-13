@@ -1,0 +1,705 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OOP in C++ Quiz</title>
+    <link rel="icon" type="image/png" href="lggp_logo.png">
+    <style>
+        :root {
+            --bs-gray: #808080;
+            --bs-Lgray: #D3D3D3;
+            --bs-Cgray: #36454F;
+            --bs-Sblue: #ADD8E6;
+            --bs-gray-active: #b0b0b0;
+            --bs-blacke: #282A35;
+            --bs-login: #b4b4b4;
+            --bs-loginH: #969696;
+            --bs-Sblue-hover: #9cc7d6;
+            --bs-pure-black: #000000;
+            --bs-white: #ffffff;
+            --bs-neoWhite: #E7E9E8;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background: var(--bs-neoWhite);
+            color: var(--bs-blacke);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .quiz-container {
+            background: var(--bs-white);
+            padding: 25px;
+            width: 90%;
+            max-width: 500px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.1);
+            position: relative;
+        }
+
+        h2 {
+            margin-bottom: 20px;
+            color: var(--bs-Cgray);
+            font-size: 1.5rem;
+            max-height: 100px; /* Limit height for scrollable area */
+            overflow-y: auto; /* Add scrollbar if content overflows */
+            padding: 10px;
+            border: 1px solid var(--bs-Lgray);
+            border-radius: 5px;
+            text-align: left;
+        }
+
+        .timer {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: var(--bs-Sblue);
+            color: var(--bs-white);
+            padding: 8px 12px;
+            border-radius: 5px;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .progress {
+            width: 100%;
+            background: var(--bs-Lgray);
+            height: 10px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: var(--bs-Sblue);
+            border-radius: 5px;
+            transition: width 0.3s;
+        }
+
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        li {
+            margin: 10px 0;
+            text-align: left;
+        }
+
+        label {
+            cursor: pointer;
+            padding: 12px;
+            display: block;
+            background: var(--bs-Lgray);
+            border-radius: 5px;
+            transition: background 0.3s, transform 0.2s;
+            color: var(--bs-blacke);
+        }
+
+        label:hover {
+            background: var(--bs-gray-active);
+            transform: translateY(-2px);
+        }
+
+        input[type="radio"] {
+            display: none;
+        }
+
+        input[type="radio"]:checked + label {
+            background: var(--bs-Sblue);
+            color: var(--bs-white);
+            font-weight: bold;
+        }
+
+        button {
+            margin-top: 20px;
+            padding: 12px;
+            width: 100%;
+            border: none;
+            background: var(--bs-Sblue);
+            color: var(--bs-white);
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background 0.3s;
+        }
+
+        button:hover {
+            background: var(--bs-Sblue-hover);
+        }
+
+        .feedback {
+            margin-top: 15px;
+            font-size: 14px;
+            color: var(--bs-Cgray);
+            font-weight: bold;
+        }
+
+        .summary {
+            text-align: left;
+            margin-top: 20px;
+        }
+
+        .summary h3 {
+            color: var(--bs-Cgray);
+            margin-bottom: 10px;
+        }
+
+        .summary p {
+            margin: 5px 0;
+            color: var(--bs-blacke);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="quiz-container" id="quiz">
+        <div class="timer" id="timer">30:00</div>
+        <div class="progress">
+            <div class="progress-bar" id="progress-bar"></div>
+        </div>
+        <h2 id="question">Question 1</h2>
+        <ul>
+            <li>
+                <input type="radio" name="answer" id="a" class="answer">
+                <label for="a" id="a_text">Option A</label>
+            </li>
+            <li>
+                <input type="radio" name="answer" id="b" class="answer">
+                <label for="b" id="b_text">Option B</label>
+            </li>
+            <li>
+                <input type="radio" name="answer" id="c" class="answer">
+                <label for="c" id="c_text">Option C</label>
+            </li>
+            <li>
+                <input type="radio" name="answer" id="d" class="answer">
+                <label for="d" id="d_text">Option D</label>
+            </li>
+        </ul>
+        <div class="feedback" id="feedback"></div>
+        <button id="submit">Submit</button>
+    </div>
+
+    <script>
+       const quizData = [
+            // Theory-based questions (1 to 20)
+            {
+                question: "1. Which of the following is NOT a feature of Object-Oriented Programming?",
+                a: "Encapsulation",
+                b: "Polymorphism",
+                c: "Structured Programming",
+                d: "Inheritance",
+                correct: "c"
+            },
+            {
+                question: "2. Which of the following operators is used for memory management in C++?",
+                a: "new, delete",
+                b: "malloc, free",
+                c: "allocate, deallocate",
+                d: "init, destroy",
+                correct: "a"
+            },
+            {
+                question: "3. Which access specifier allows members of a class to be accessible only within the class?",
+                a: "Public",
+                b: "Private",
+                c: "Protected",
+                d: "Global",
+                correct: "b"
+            },
+            {
+                question: "4. Which of the following allows a function to have the same name but different arguments?",
+                a: "Function overriding",
+                b: "Function overloading",
+                c: "Function nesting",
+                d: "Function inheritance",
+                correct: "b"
+            },
+            {
+                question: "5. Which special function is used to initialize objects in C++?",
+                a: "Destructor",
+                b: "Constructor",
+                c: "Allocator",
+                d: "Mutator",
+                correct: "b"
+            },
+            {
+                question: "6. What is the default access specifier of a class in C++?",
+                a: "Public",
+                b: "Private",
+                c: "Protected",
+                d: "None",
+                correct: "b"
+            },
+            {
+                question: "7. Which feature of OOP allows one class to acquire properties of another class?",
+                a: "Encapsulation",
+                b: "Abstraction",
+                c: "Inheritance",
+                d: "Polymorphism",
+                correct: "c"
+            },
+            {
+                question: "8. Which of the following is true for function overloading?",
+                a: "Functions with the same name but different return types",
+                b: "Functions with the same name and same parameters",
+                c: "Functions with the same name but different parameters",
+                d: "None of the above",
+                correct: "c"
+            },
+            {
+                question: "9. Which of the following inheritance types is NOT supported in C++?",
+                a: "Single",
+                b: "Multiple",
+                c: "Multilevel",
+                d: "None of the above",
+                correct: "d"
+            },
+            {
+                question: "10. Which C++ feature ensures that only necessary data is accessible to the user?",
+                a: "Polymorphism",
+                b: "Abstraction",
+                c: "Encapsulation",
+                d: "Overloading",
+                correct: "b"
+            },
+            {
+                question: "11. What is the purpose of a destructor in C++?",
+                a: "To initialize objects",
+                b: "To deallocate memory",
+                c: "To allocate memory",
+                d: "To overload functions",
+                correct: "b"
+            },
+            {
+                question: "12. Which operator is used to define a member function outside a class?",
+                a: "->",
+                b: ".",
+                c: "::",
+                d: ":",
+                correct: "c"
+            },
+            {
+                question: "13. What does a virtual function enable in C++?",
+                a: "Function overloading",
+                b: "Function overriding",
+                c: "Compile-time polymorphism",
+                d: "Encapsulation",
+                correct: "b"
+            },
+            {
+                question: "14. Which of the following statements is true about constructors?",
+                a: "A constructor must always have a return type",
+                b: "A constructor is automatically called when an object is created",
+                c: "A constructor must be declared public",
+                d: "A constructor cannot be overloaded",
+                correct: "b"
+            },
+            {
+                question: "15. Which keyword is used to declare an abstract class in C++?",
+                a: "virtual",
+                b: "abstract",
+                c: "protected",
+                d: "interface",
+                correct: "a"
+            },
+            {
+                question: "16. What happens when a base class and derived class both have constructors?",
+                a: "Only the base class constructor runs",
+                b: "Only the derived class constructor runs",
+                c: "Both constructors run, with the base class running first",
+                d: "Both constructors run, with the derived class running first",
+                correct: "c"
+            },
+            {
+                question: "17. Which of the following is NOT a type of polymorphism?",
+                a: "Compile-time polymorphism",
+                b: "Run-time polymorphism",
+                c: "Data polymorphism",
+                d: "Operator overloading",
+                correct: "c"
+            },
+            {
+                question: "18. Which type of inheritance allows a derived class to inherit from more than one base class?",
+                a: "Single",
+                b: "Multiple",
+                c: "Multilevel",
+                d: "Hierarchical",
+                correct: "b"
+            },
+            {
+                question: "19. Which function in C++ is used to read a line of text input including spaces?",
+                a: "cin",
+                b: "getline()",
+                c: "read()",
+                d: "scanf()",
+                correct: "b"
+            },
+            {
+                question: "20. What will be the output of the following program?",
+                code: `#include <iostream>
+using namespace std;
+class A {
+public:
+    A() { cout << "A "; }
+};
+int main() {
+    A obj1, obj2;
+    return 0;
+}`,
+                a: "A",
+                b: "A A",
+                c: "Error: Constructor not defined",
+                d: "No Output",
+                correct: "b"
+            },
+
+            // Code-based questions (21 to 30)
+            {
+                question: "21. What will be the output of the following code?",
+                code: `#include <iostream>
+using namespace std;
+class Base {
+public:
+    void display() { cout << "Base Class"; }
+};
+class Derived : public Base {
+public:
+    void display() { cout << "Derived Class"; }
+};
+int main() {
+    Derived d;
+    d.display();
+    return 0;
+}`,
+                a: "Base Class",
+                b: "Derived Class",
+                c: "Error",
+                d: "No Output",
+                correct: "b"
+            },
+            {
+                question: "22. What will be the output of the following code?",
+                code: `#include <iostream>
+using namespace std;
+class A {
+public:
+    virtual void show() { cout << "A"; }
+};
+class B : public A {
+public:
+    void show() { cout << "B"; }
+};
+int main() {
+    A *a = new B();
+    a->show();
+    return 0;
+}`,
+                a: "A",
+                b: "B",
+                c: "Error",
+                d: "No Output",
+                correct: "b"
+            },
+            {
+                question: "23. What will be the output of the following code?",
+                code: `#include <iostream>
+using namespace std;
+class Test {
+    static int count;
+public:
+    Test() { count++; }
+    static int getCount() { return count; }
+};
+int Test::count = 0;
+int main() {
+    Test t1, t2;
+    cout << Test::getCount();
+    return 0;
+}`,
+                a: "0",
+                b: "1",
+                c: "2",
+                d: "Error",
+                correct: "c"
+            },
+            {
+                question: "24. What will be the output of the following code?",
+                code: `#include <iostream>
+using namespace std;
+class Base {
+public:
+    Base() { cout << "Base Constructor\n"; }
+    ~Base() { cout << "Base Destructor\n"; }
+};
+class Derived : public Base {
+public:
+    Derived() { cout << "Derived Constructor\n"; }
+    ~Derived() { cout << "Derived Destructor\n"; }
+};
+int main() {
+    Derived d;
+    return 0;
+}`,
+                a: "Base Constructor\nDerived Constructor\nDerived Destructor\nBase Destructor",
+                b: "Derived Constructor\nBase Constructor\nDerived Destructor\nBase Destructor",
+                c: "Base Constructor\nDerived Constructor\nBase Destructor\nDerived Destructor",
+                d: "Error",
+                correct: "a"
+            },
+            {
+                question: "25. What will be the output of the following code?",
+                code: `#include <iostream>
+using namespace std;
+class A {
+public:
+    A() { cout << "A"; }
+    ~A() { cout << "~A"; }
+};
+class B : public A {
+public:
+    B() { cout << "B"; }
+    ~B() { cout << "~B"; }
+};
+int main() {
+    B b;
+    return 0;
+}`,
+                a: "AB~B~A",
+                b: "AB~A~B",
+                c: "BA~B~A",
+                d: "Error",
+                correct: "a"
+            },
+            {
+                question: "26. What will be the output of the following code?",
+                code: `#include <iostream>
+using namespace std;
+class A {
+public:
+    virtual void show() = 0;
+};
+class B : public A {
+public:
+    void show() { cout << "B"; }
+};
+int main() {
+    A *a = new B();
+    a->show();
+    return 0;
+}`,
+                a: "A",
+                b: "B",
+                c: "Error",
+                d: "No Output",
+                correct: "b"
+            },
+            {
+                question: "27. What will be the output of the following code?",
+                code: `#include <iostream>
+using namespace std;
+class A {
+public:
+    A() { cout << "A"; }
+};
+class B : public A {
+public:
+    B() { cout << "B"; }
+};
+int main() {
+    B b;
+    return 0;
+}`,
+                a: "A",
+                b: "B",
+                c: "AB",
+                d: "Error",
+                correct: "c"
+            },
+            {
+                question: "28. What will be the output of the following code?",
+                code: `#include <iostream>
+using namespace std;
+class A {
+public:
+    A() { cout << "A"; }
+    ~A() { cout << "~A"; }
+};
+class B : public A {
+public:
+    B() { cout << "B"; }
+    ~B() { cout << "~B"; }
+};
+int main() {
+    B b;
+    return 0;
+}`,
+                a: "AB~B~A",
+                b: "AB~A~B",
+                c: "BA~B~A",
+                d: "Error",
+                correct: "a"
+            },
+            {
+                question: "29. What will be the output of the following code?",
+                code: `#include <iostream>
+using namespace std;
+class A {
+public:
+    virtual void show() { cout << "A"; }
+};
+class B : public A {
+public:
+    void show() { cout << "B"; }
+};
+int main() {
+    A *a = new B();
+    a->show();
+    return 0;
+}`,
+                a: "A",
+                b: "B",
+                c: "Error",
+                d: "No Output",
+                correct: "b"
+            },
+            {
+                question: "30. What will be the output of the following code?",
+                code: `#include <iostream>
+using namespace std;
+class A {
+public:
+    A() { cout << "A"; }
+    ~A() { cout << "~A"; }
+};
+class B : public A {
+public:
+    B() { cout << "B"; }
+    ~B() { cout << "~B"; }
+};
+int main() {
+    B b;
+    return 0;
+}`,
+                a: "AB~B~A",
+                b: "AB~A~B",
+                c: "BA~B~A",
+                d: "Error",
+                correct: "a"
+            }
+        ];
+        let currentQuiz = 0;
+        let score = 0;
+        let timeLeft = 30 * 60;
+
+        const timerEl = document.getElementById("timer");
+        const quizEl = document.getElementById("quiz");
+        const questionEl = document.getElementById("question");
+        const answerEls = document.querySelectorAll(".answer");
+        const a_text = document.getElementById("a_text");
+        const b_text = document.getElementById("b_text");
+        const c_text = document.getElementById("c_text");
+        const d_text = document.getElementById("d_text");
+        const submitBtn = document.getElementById("submit");
+        const feedbackEl = document.getElementById("feedback");
+        const progressBar = document.getElementById("progress-bar");
+
+        function loadQuiz() {
+            deselectAnswers();
+            feedbackEl.textContent = "";
+            const currentQuizData = quizData[currentQuiz];
+            questionEl.innerHTML = `${currentQuizData.question}<br><pre>${currentQuizData.code || ""}</pre>`;
+            a_text.innerText = currentQuizData.a;
+            b_text.innerText = currentQuizData.b;
+            c_text.innerText = currentQuizData.c;
+            d_text.innerText = currentQuizData.d;
+            updateProgressBar();
+        }
+
+        function deselectAnswers() {
+            answerEls.forEach(answerEl => answerEl.checked = false);
+        }
+
+        function getSelected() {
+            let answer;
+            answerEls.forEach(answerEl => {
+                if (answerEl.checked) {
+                    answer = answerEl.id;
+                }
+            });
+            return answer;
+        }
+
+        function updateProgressBar() {
+            const progress = ((currentQuiz + 1) / quizData.length) * 100;
+            progressBar.style.width = `${progress}%`;
+        }
+
+        function startTimer() {
+            const countdown = setInterval(() => {
+                let minutes = Math.floor(timeLeft / 60);
+                let seconds = timeLeft % 60;
+                timerEl.textContent = `${minutes}:${seconds < 10 ? "0" : ""}${seconds}`;
+                timeLeft--;
+                if (timeLeft < 0) {
+                    clearInterval(countdown);
+                    autoSubmit();
+                }
+            }, 1000);
+        }
+
+        function autoSubmit() {
+            quizEl.innerHTML = `<h2>Time's up! You scored ${score}/${quizData.length}</h2>
+                                <div class="summary">
+                                    <h3>Summary:</h3>
+                                    <p>Correct Answers: ${score}</p>
+                                    <p>Incorrect Answers: ${quizData.length - score}</p>
+                                </div>
+                                <button onclick="location.reload()">Restart</button>`;
+        }
+
+        submitBtn.addEventListener("click", () => {
+            const answer = getSelected();
+            if (answer) {
+                if (answer === quizData[currentQuiz].correct) {
+                    score++;
+                    feedbackEl.textContent = "Correct!";
+                    feedbackEl.style.color = "green";
+                } else {
+                    feedbackEl.textContent = "Incorrect!";
+                    feedbackEl.style.color = "red";
+                }
+                currentQuiz++;
+                if (currentQuiz < quizData.length) {
+                    setTimeout(loadQuiz, 1000);
+                } else {
+                    quizEl.innerHTML = `<h2>You scored ${score}/${quizData.length}</h2>
+                                        <div class="summary">
+                                            <h3>Summary:</h3>
+                                            <p>Correct Answers: ${score}</p>
+                                            <p>Incorrect Answers: ${quizData.length - score}</p>
+                                        </div>
+                                        <button onclick="location.reload()">Restart</button>`;
+                }
+            }
+        });
+
+        // Initialize quiz
+        loadQuiz();
+        startTimer();
+    </script>
+</body>
+</html>

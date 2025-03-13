@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DTE Quiz</title>
+    <link rel="icon" type="image/png" href="lggp_logo.png">
+    <style>
+        :root {
+            --bs-gray: #808080;
+            --bs-Lgray: #D3D3D3;
+            --bs-Cgray: #36454F;
+            --bs-Sblue: #ADD8E6;
+            --bs-gray-active: #b0b0b0;
+            --bs-blacke: #282A35;
+            --bs-login: #b4b4b4;
+            --bs-loginH: #969696;
+            --bs-Sblue-hover: #9cc7d6;
+            --bs-pure-black: #000000;
+            --bs-white: #ffffff;
+            --bs-neoWhite: #E7E9E8;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background: var(--bs-neoWhite);
+            color: var(--bs-blacke);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .quiz-container {
+            background: var(--bs-white);
+            padding: 25px;
+            width: 90%;
+            max-width: 500px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.1);
+            position: relative;
+        }
+
+        h2 {
+            margin-bottom: 20px;
+            color: var(--bs-Cgray);
+            font-size: 1.5rem;
+        }
+
+        .timer {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: var(--bs-Sblue);
+            color: var(--bs-white);
+            padding: 8px 12px;
+            border-radius: 5px;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .progress {
+            width: 100%;
+            background: var(--bs-Lgray);
+            height: 10px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: var(--bs-Sblue);
+            border-radius: 5px;
+            transition: width 0.3s;
+        }
+
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        li {
+            margin: 10px 0;
+            text-align: left;
+        }
+
+        label {
+            cursor: pointer;
+            padding: 12px;
+            display: block;
+            background: var(--bs-Lgray);
+            border-radius: 5px;
+            transition: background 0.3s, transform 0.2s;
+            color: var(--bs-blacke);
+        }
+
+        label:hover {
+            background: var(--bs-gray-active);
+            transform: translateY(-2px);
+        }
+
+        input[type="radio"] {
+            display: none;
+        }
+
+        input[type="radio"]:checked + label {
+            background: var(--bs-Sblue);
+            color: var(--bs-white);
+            font-weight: bold;
+        }
+
+        button {
+            margin-top: 20px;
+            padding: 12px;
+            width: 100%;
+            border: none;
+            background: var(--bs-Sblue);
+            color: var(--bs-white);
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background 0.3s;
+        }
+
+        button:hover {
+            background: var(--bs-Sblue-hover);
+        }
+
+        .feedback {
+            margin-top: 15px;
+            font-size: 14px;
+            color: var(--bs-Cgray);
+            font-weight: bold;
+        }
+
+        .summary {
+            text-align: left;
+            margin-top: 20px;
+        }
+
+        .summary h3 {
+            color: var(--bs-Cgray);
+            margin-bottom: 10px;
+        }
+
+        .summary p {
+            margin: 5px 0;
+            color: var(--bs-blacke);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="quiz-container" id="quiz">
+        <div class="timer" id="timer">30:00</div>
+        <div class="progress">
+            <div class="progress-bar" id="progress-bar"></div>
+        </div>
+        <h2 id="question">Question 1</h2>
+        <ul>
+            <li>
+                <input type="radio" name="answer" id="a" class="answer">
+                <label for="a" id="a_text">Option A</label>
+            </li>
+            <li>
+                <input type="radio" name="answer" id="b" class="answer">
+                <label for="b" id="b_text">Option B</label>
+            </li>
+            <li>
+                <input type="radio" name="answer" id="c" class="answer">
+                <label for="c" id="c_text">Option C</label>
+            </li>
+            <li>
+                <input type="radio" name="answer" id="d" class="answer">
+                <label for="d" id="d_text">Option D</label>
+            </li>
+        </ul>
+        <div class="feedback" id="feedback"></div>
+        <button id="submit">Submit</button>
+    </div>
+
+    <script>
+        const quizData = [
+            {
+                question: "1. What is the base of the hexadecimal number system?",
+                a: "2",
+                b: "8",
+                c: "10",
+                d: "16",
+                correct: "d"
+            },
+            {
+                question: "2. Convert (101101)₂ to decimal.",
+                a: "45",
+                b: "53",
+                c: "55",
+                d: "61",
+                correct: "c"
+            },
+            {
+                question: "3. What is (47)₈ in binary?",
+                a: "100111",
+                b: "100011",
+                c: "101111",
+                d: "110011",
+                correct: "a"
+            },
+            {
+                question: "4. How many bits are required to represent (3F)₁₆ in binary?",
+                a: "4",
+                b: "6",
+                c: "8",
+                d: "10",
+                correct: "c"
+            },
+            {
+                question: "5. Perform (1010)₂ + (1101)₂.",
+                a: "10111",
+                b: "10011",
+                c: "11111",
+                d: "11011",
+                correct: "b"
+            },
+            {
+                question: "6. Which code is used for error detection?",
+                a: "ASCII",
+                b: "BCD",
+                c: "Gray Code",
+                d: "Parity Code",
+                correct: "d"
+            },
+            {
+                question: "7. The output of an AND gate is 1 when:",
+                a: "Any one input is 1",
+                b: "Both inputs are 1",
+                c: "Both inputs are 0",
+                d: "Any one input is 0",
+                correct: "b"
+            },
+            {
+                question: "8. What is the complement of A + B (using De Morgan’s theorem)?",
+                a: "A' + B'",
+                b: "A'B'",
+                c: "(A + B)'",
+                d: "A + B'",
+                correct: "b"
+            },
+            {
+                question: "9. Which logic gate is called a universal gate?",
+                a: "AND",
+                b: "OR",
+                c: "NOR",
+                d: "XOR",
+                correct: "c"
+            },
+            {
+                question: "10. What is the output of the following Boolean equation? A(B + C)",
+                a: "AB + AC",
+                b: "A + BC",
+                c: "A + B + C",
+                d: "AB + C",
+                correct: "a"
+            },
+            {
+                question: "11. How many inputs does a full adder have?",
+                a: "2",
+                b: "3",
+                c: "4",
+                d: "1",
+                correct: "b"
+            },
+            {
+                question: "12. A multiplexer is used to:",
+                a: "Encode data",
+                b: "Decode data",
+                c: "Select one input from many inputs",
+                d: "Store data",
+                correct: "c"
+            },
+            {
+                question: "13. Which of the following statements is true for a half adder?",
+                a: "It has three inputs and two outputs",
+                b: "It has two inputs and one output",
+                c: "It has two inputs and two outputs",
+                d: "It has one input and one output",
+                correct: "c"
+            },
+            {
+                question: "14. Which flip-flop has a toggle mode?",
+                a: "D",
+                b: "T",
+                c: "JK",
+                d: "RS",
+                correct: "b"
+            },
+            {
+                question: "15. A race-around condition occurs in which flip-flop?",
+                a: "SR",
+                b: "JK",
+                c: "D",
+                d: "T",
+                correct: "b"
+            },
+            {
+                question: "16. Which register shifts data in both left and right directions?",
+                a: "SISO",
+                b: "SIPO",
+                c: "PISO",
+                d: "Bidirectional Shift Register",
+                correct: "d"
+            },
+            {
+                question: "17. A counter that counts both up and down is called:",
+                a: "Ring counter",
+                b: "Twisted ring counter",
+                c: "Up-down counter",
+                d: "Ripple counter",
+                correct: "c"
+            },
+            {
+                question: "18. How many select lines are required for a 16:1 multiplexer?",
+                a: "2",
+                b: "4",
+                c: "8",
+                d: "16",
+                correct: "b"
+            },
+            {
+                question: "19. Which flip-flop is used to eliminate the race-around condition in JK flip-flops?",
+                a: "SR",
+                b: "Master-Slave JK",
+                c: "T",
+                d: "D",
+                correct: "b"
+            },
+            {
+                question: "20. Which counter resets automatically after reaching a certain count?",
+                a: "Ripple counter",
+                b: "Modulus counter",
+                c: "Ring counter",
+                d: "Shift register",
+                correct: "b"
+            },
+            {
+                question: "21. What is the primary function of a decoder?",
+                a: "Multiplication",
+                b: "Addition",
+                c: "Convert binary data to decimal",
+                d: "Encode data",
+                correct: "c"
+            },
+            {
+                question: "22. The function of a buffer in digital circuits is to:",
+                a: "Amplify signals",
+                b: "Invert signals",
+                c: "Store signals",
+                d: "Convert signals",
+                correct: "a"
+            },
+            {
+                question: "23. What is the binary equivalent of decimal 25?",
+                a: "10100",
+                b: "11001",
+                c: "11100",
+                d: "10011",
+                correct: "b"
+            },
+            {
+                question: "24. The minimum number of NAND gates required to implement an OR gate is:",
+                a: "1",
+                b: "2",
+                c: "3",
+                d: "4",
+                correct: "b"
+            },
+            {
+                question: "25. In a 4-bit ring counter, how many states are possible?",
+                a: "2",
+                b: "4",
+                c: "8",
+                d: "16",
+                correct: "b"
+            },
+            {
+                question: "26. What is the typical application of a shift register?",
+                a: "Data storage",
+                b: "Data conversion",
+                c: "Data shifting",
+                d: "All of the above",
+                correct: "d"
+            },
+            {
+                question: "27. The process of refreshing dynamic RAM (DRAM) is done using:",
+                a: "Flip-flops",
+                b: "Charge leakage prevention",
+                c: "Static RAM (SRAM)",
+                d: "Registers",
+                correct: "b"
+            },
+            {
+                question: "28. Which type of ROM can be reprogrammed using electrical signals?",
+                a: "PROM",
+                b: "EPROM",
+                c: "EEPROM",
+                d: "Flash Memory",
+                correct: "c"
+            },
+            {
+                question: "29. Which type of ADC provides the fastest conversion?",
+                a: "Dual Slope",
+                b: "Flash ADC",
+                c: "SAR ADC",
+                d: "Pipeline ADC",
+                correct: "b"
+            },
+            {
+                question: "30. What is the primary difference between SRAM and DRAM?",
+                a: "SRAM requires refreshing; DRAM does not",
+                b: "DRAM requires refreshing; SRAM does not",
+                c: "Both require refreshing",
+                d: "None of the above",
+                correct: "b"
+            }
+        ];
+
+        let currentQuiz = 0;
+        let score = 0;
+        let timeLeft = 30 * 60;
+
+        const timerEl = document.getElementById("timer");
+        const quizEl = document.getElementById("quiz");
+        const questionEl = document.getElementById("question");
+        const answerEls = document.querySelectorAll(".answer");
+        const a_text = document.getElementById("a_text");
+        const b_text = document.getElementById("b_text");
+        const c_text = document.getElementById("c_text");
+        const d_text = document.getElementById("d_text");
+        const submitBtn = document.getElementById("submit");
+        const feedbackEl = document.getElementById("feedback");
+        const progressBar = document.getElementById("progress-bar");
+
+        function loadQuiz() {
+            deselectAnswers();
+            feedbackEl.textContent = "";
+            const currentQuizData = quizData[currentQuiz];
+            questionEl.innerText = currentQuizData.question;
+            a_text.innerText = currentQuizData.a;
+            b_text.innerText = currentQuizData.b;
+            c_text.innerText = currentQuizData.c;
+            d_text.innerText = currentQuizData.d;
+            updateProgressBar();
+        }
+
+        function deselectAnswers() {
+            answerEls.forEach(answerEl => answerEl.checked = false);
+        }
+
+        function getSelected() {
+            let answer;
+            answerEls.forEach(answerEl => {
+                if (answerEl.checked) {
+                    answer = answerEl.id;
+                }
+            });
+            return answer;
+        }
+
+        function updateProgressBar() {
+            const progress = ((currentQuiz + 1) / quizData.length) * 100;
+            progressBar.style.width = `${progress}%`;
+        }
+
+        function startTimer() {
+            const countdown = setInterval(() => {
+                let minutes = Math.floor(timeLeft / 60);
+                let seconds = timeLeft % 60;
+                timerEl.textContent = `${minutes}:${seconds < 10 ? "0" : ""}${seconds}`;
+                timeLeft--;
+                if (timeLeft < 0) {
+                    clearInterval(countdown);
+                    autoSubmit();
+                }
+            }, 1000);
+        }
+
+        function autoSubmit() {
+            quizEl.innerHTML = `<h2>Time's up! You scored ${score}/${quizData.length}</h2>
+                                <div class="summary">
+                                    <h3>Summary:</h3>
+                                    <p>Correct Answers: ${score}</p>
+                                    <p>Incorrect Answers: ${quizData.length - score}</p>
+                                </div>
+                                <button onclick="location.reload()">Restart</button>`;
+        }
+
+        submitBtn.addEventListener("click", () => {
+            const answer = getSelected();
+            if (answer) {
+                if (answer === quizData[currentQuiz].correct) {
+                    score++;
+                    feedbackEl.textContent = "Correct!";
+                    feedbackEl.style.color = "green";
+                } else {
+                    feedbackEl.textContent = "Incorrect!";
+                    feedbackEl.style.color = "red";
+                }
+                currentQuiz++;
+                if (currentQuiz < quizData.length) {
+                    setTimeout(loadQuiz, 1000);
+                } else {
+                    quizEl.innerHTML = `<h2>You scored ${score}/${quizData.length}</h2>
+                                        <div class="summary">
+                                            <h3>Summary:</h3>
+                                            <p>Correct Answers: ${score}</p>
+                                            <p>Incorrect Answers: ${quizData.length - score}</p>
+                                        </div>
+                                        <button onclick="location.reload()">Restart</button>`;
+                }
+            }
+        });
+
+        // Initialize quiz
+        loadQuiz();
+        startTimer();
+    </script>
+</body>
+</html>

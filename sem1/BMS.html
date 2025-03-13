@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BMS Quiz</title>
+    <link rel="icon" type="image/png" href="lggp_logo.png">
+    <style>
+        :root {
+            --bs-gray: #808080;
+            --bs-Lgray: #D3D3D3;
+            --bs-Cgray: #36454F;
+            --bs-Sblue: #ADD8E6;
+            --bs-gray-active: #b0b0b0;
+            --bs-blacke: #282A35;
+            --bs-login: #b4b4b4;
+            --bs-loginH: #969696;
+            --bs-Sblue-hover: #9cc7d6;
+            --bs-pure-black: #000000;
+            --bs-white: #ffffff;
+            --bs-neoWhite: #E7E9E8;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background: var(--bs-neoWhite);
+            color: var(--bs-blacke);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .quiz-container {
+            background: var(--bs-white);
+            padding: 25px;
+            width: 90%;
+            max-width: 500px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.1);
+            position: relative;
+        }
+
+        h2 {
+            margin-bottom: 20px;
+            color: var(--bs-Cgray);
+            font-size: 1.5rem;
+        }
+
+        .timer {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: var(--bs-Sblue);
+            color: var(--bs-white);
+            padding: 8px 12px;
+            border-radius: 5px;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .progress {
+            width: 100%;
+            background: var(--bs-Lgray);
+            height: 10px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: var(--bs-Sblue);
+            border-radius: 5px;
+            transition: width 0.3s;
+        }
+
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        li {
+            margin: 10px 0;
+            text-align: left;
+        }
+
+        label {
+            cursor: pointer;
+            padding: 12px;
+            display: block;
+            background: var(--bs-Lgray);
+            border-radius: 5px;
+            transition: background 0.3s, transform 0.2s;
+            color: var(--bs-blacke);
+        }
+
+        label:hover {
+            background: var(--bs-gray-active);
+            transform: translateY(-2px);
+        }
+
+        input[type="radio"] {
+            display: none;
+        }
+
+        input[type="radio"]:checked + label {
+            background: var(--bs-Sblue);
+            color: var(--bs-white);
+            font-weight: bold;
+        }
+
+        button {
+            margin-top: 20px;
+            padding: 12px;
+            width: 100%;
+            border: none;
+            background: var(--bs-Sblue);
+            color: var(--bs-white);
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background 0.3s;
+        }
+
+        button:hover {
+            background: var(--bs-Sblue-hover);
+        }
+
+        .feedback {
+            margin-top: 15px;
+            font-size: 14px;
+            color: var(--bs-Cgray);
+            font-weight: bold;
+        }
+
+        .summary {
+            text-align: left;
+            margin-top: 20px;
+        }
+
+        .summary h3 {
+            color: var(--bs-Cgray);
+            margin-bottom: 10px;
+        }
+
+        .summary p {
+            margin: 5px 0;
+            color: var(--bs-blacke);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="quiz-container" id="quiz">
+        <div class="timer" id="timer">30:00</div>
+        <div class="progress">
+            <div class="progress-bar" id="progress-bar"></div>
+        </div>
+        <h2 id="question">Question 1</h2>
+        <ul>
+            <li>
+                <input type="radio" name="answer" id="a" class="answer">
+                <label for="a" id="a_text">Option A</label>
+            </li>
+            <li>
+                <input type="radio" name="answer" id="b" class="answer">
+                <label for="b" id="b_text">Option B</label>
+            </li>
+            <li>
+                <input type="radio" name="answer" id="c" class="answer">
+                <label for="c" id="c_text">Option C</label>
+            </li>
+            <li>
+                <input type="radio" name="answer" id="d" class="answer">
+                <label for="d" id="d_text">Option D</label>
+            </li>
+        </ul>
+        <div class="feedback" id="feedback"></div>
+        <button id="submit">Submit</button>
+    </div>
+
+    <script>
+        const mathQuestions = [
+            {
+                question: "1. Solve log₂(32) + log₂(4) = ?",
+                a: "7",
+                b: "6",
+                c: "8",
+                d: "5",
+                correct: "a"
+            },
+            {
+                question: "2. If A = [[2, 1], [3, 4]], find the determinant of A.",
+                a: "7",
+                b: "8",
+                c: "5",
+                d: "9",
+                correct: "a"
+            },
+            {
+                question: "3. The inverse of matrix A exists if and only if its determinant is?",
+                a: "0",
+                b: "1",
+                c: "Non-zero",
+                d: "Infinity",
+                correct: "c"
+            },
+            {
+                question: "4. Solve: (x+2)/(x²-4) = ? (Find the partial fraction)",
+                a: "A/(x-2) + B/(x+2)",
+                b: "A/(x-2) - B/(x+2)",
+                c: "A/(x+2) + B/(x-2)",
+                d: "A/(x²-4)",
+                correct: "a"
+            },
+            {
+                question: "5. If sin A = 3/5, find cos A.",
+                a: "4/5",
+                b: "3/4",
+                c: "5/4",
+                d: "1/2",
+                correct: "a"
+            },
+            {
+                question: "6. Find the value of tan 45° + cot 45°.",
+                a: "2",
+                b: "1",
+                c: "0",
+                d: "4",
+                correct: "a"
+            },
+            {
+                question: "7. The general form of a straight line is?",
+                a: "Ax + By + C = 0",
+                b: "y = mx + c",
+                c: "ax² + bx + c = 0",
+                d: "y = x + C",
+                correct: "a"
+            },
+            {
+                question: "8. The perpendicular distance from point (3,4) to line x + y = 6 is?",
+                a: "1",
+                b: "2",
+                c: "3",
+                d: "4",
+                correct: "b"
+            },
+            {
+                question: "9. If f(x) = 2x² + 3x + 5, find f'(x).",
+                a: "4x + 3",
+                b: "4x + 5",
+                c: "2x + 3",
+                d: "4x² + 3",
+                correct: "a"
+            },
+            {
+                question: "10. The derivative of e^x is?",
+                a: "e^x",
+                b: "x e^x",
+                c: "ln x",
+                d: "1/x",
+                correct: "a"
+            },
+            {
+                question: "11. What is the equation of a tangent to the curve y = x² at x = 2?",
+                a: "y = 4x - 4",
+                b: "y = 4x + 4",
+                c: "y = x² - 4",
+                d: "y = 2x - 4",
+                correct: "a"
+            },
+            {
+                question: "12. What is the range of the dataset {2, 5, 7, 10, 12}?",
+                a: "10",
+                b: "12",
+                c: "5",
+                d: "8",
+                correct: "d"
+            },
+            {
+                question: "13. The mean of {4, 6, 8, 10} is?",
+                a: "7",
+                b: "8",
+                c: "6",
+                d: "5",
+                correct: "a"
+            },
+            {
+                question: "14. The standard deviation is a measure of?",
+                a: "Central tendency",
+                b: "Dispersion",
+                c: "Skewness",
+                d: "Mean",
+                correct: "b"
+            },
+            {
+                question: "15. If log₄ 16 = x, find x.",
+                a: "2",
+                b: "4",
+                c: "1",
+                d: "3",
+                correct: "a"
+            },
+            {
+                question: "16. Find the equation of the line passing through (2,3) with slope 4.",
+                a: "y = 4x - 5",
+                b: "y = 4x + 3",
+                c: "y = 4x - 3",
+                d: "y = 3x + 4",
+                correct: "a"
+            },
+            {
+                question: "17. The sum of all angles in a triangle is?",
+                a: "90°",
+                b: "180°",
+                c: "270°",
+                d: "360°",
+                correct: "b"
+            },
+            {
+                question: "18. The value of cos(π/3) is?",
+                a: "1/2",
+                b: "√3/2",
+                c: "0",
+                d: "1",
+                correct: "a"
+            },
+            {
+                question: "19. The coefficient of range is given by?",
+                a: "(Max - Min) / (Max + Min)",
+                b: "(Max + Min) / (Max - Min)",
+                c: "(Mean / Range)",
+                d: "(Mean × Range)",
+                correct: "a"
+            },
+            {
+                question: "20. What is the value of sin 90°?",
+                a: "0",
+                b: "1",
+                c: "-1",
+                d: "Undefined",
+                correct: "b"
+            }
+        ];
+
+        const moreMathQuestions = [
+            {
+                question: "21. If A and B are two matrices such that AB ≠ BA, then matrices A and B are?",
+                a: "Commutative",
+                b: "Non-Commutative",
+                c: "Singular",
+                d: "Invertible",
+                correct: "b"
+            },
+            {
+                question: "22. If sin A = 4/5 and cos B = 3/5, find sin(A + B).",
+                a: "24/25",
+                b: "7/10",
+                c: "33/50",
+                d: "5/6",
+                correct: "a"
+            },
+            {
+                question: "23. The perpendicular distance between two parallel lines y = 2x + 3 and y = 2x - 5 is?",
+                a: "4",
+                b: "6",
+                c: "5",
+                d: "8",
+                correct: "b"
+            },
+            {
+                question: "24. If y = x² + 3x - 5, find dy/dx.",
+                a: "2x + 3",
+                b: "x + 3",
+                c: "2x - 3",
+                d: "2x + 5",
+                correct: "a"
+            },
+            {
+                question: "25. Find the maximum value of f(x) = -x² + 4x + 1.",
+                a: "5",
+                b: "3",
+                c: "7",
+                d: "9",
+                correct: "c"
+            },
+            {
+                question: "26. If f(x) = ln(x), what is f'(x)?",
+                a: "x",
+                b: "1/x",
+                c: "ln x",
+                d: "e^x",
+                correct: "b"
+            },
+            {
+                question: "27. The variance of {2, 4, 6, 8} is?",
+                a: "4",
+                b: "5",
+                c: "6",
+                d: "2",
+                correct: "a"
+            },
+            {
+                question: "28. The sum of roots of the quadratic equation ax² + bx + c = 0 is given by?",
+                a: "-b/a",
+                b: "b/a",
+                c: "c/a",
+                d: "-c/a",
+                correct: "a"
+            },
+            {
+                question: "29. What is the slope of the line 3x - 2y + 6 = 0?",
+                a: "3/2",
+                b: "2/3",
+                c: "-3/2",
+                d: "-2/3",
+                correct: "c"
+            },
+            {
+                question: "30. The Pythagorean Theorem states that for a right triangle with sides a, b and hypotenuse c, the equation is?",
+                a: "a² + b² = c²",
+                b: "a² - b² = c²",
+                c: "a² + b² = 2c²",
+                d: "a² + c² = b²",
+                correct: "a"
+            }
+        ];
+
+        // Combine all 30 questions into one array
+        const fullMathQuestions = mathQuestions.concat(moreMathQuestions);
+
+        let currentQuiz = 0;
+        let score = 0;
+        let timeLeft = 30 * 60;
+
+        const timerEl = document.getElementById("timer");
+        const quizEl = document.getElementById("quiz");
+        const questionEl = document.getElementById("question");
+        const answerEls = document.querySelectorAll(".answer");
+        const a_text = document.getElementById("a_text");
+        const b_text = document.getElementById("b_text");
+        const c_text = document.getElementById("c_text");
+        const d_text = document.getElementById("d_text");
+        const submitBtn = document.getElementById("submit");
+        const feedbackEl = document.getElementById("feedback");
+        const progressBar = document.getElementById("progress-bar");
+
+        function loadQuiz() {
+            deselectAnswers();
+            feedbackEl.textContent = "";
+            const currentQuizData = fullMathQuestions[currentQuiz];
+            questionEl.innerText = currentQuizData.question;
+            a_text.innerText = currentQuizData.a;
+            b_text.innerText = currentQuizData.b;
+            c_text.innerText = currentQuizData.c;
+            d_text.innerText = currentQuizData.d;
+            updateProgressBar();
+        }
+
+        function deselectAnswers() {
+            answerEls.forEach(answerEl => answerEl.checked = false);
+        }
+
+        function getSelected() {
+            let answer;
+            answerEls.forEach(answerEl => {
+                if (answerEl.checked) {
+                    answer = answerEl.id;
+                }
+            });
+            return answer;
+        }
+
+        function updateProgressBar() {
+            const progress = ((currentQuiz + 1) / fullMathQuestions.length) * 100;
+            progressBar.style.width = `${progress}%`;
+        }
+
+        function startTimer() {
+            const countdown = setInterval(() => {
+                let minutes = Math.floor(timeLeft / 60);
+                let seconds = timeLeft % 60;
+                timerEl.textContent = `${minutes}:${seconds < 10 ? "0" : ""}${seconds}`;
+                timeLeft--;
+                if (timeLeft < 0) {
+                    clearInterval(countdown);
+                    autoSubmit();
+                }
+            }, 1000);
+        }
+
+        function autoSubmit() {
+            quizEl.innerHTML = `<h2>Time's up! You scored ${score}/${fullMathQuestions.length}</h2>
+                                <div class="summary">
+                                    <h3>Summary:</h3>
+                                    <p>Correct Answers: ${score}</p>
+                                    <p>Incorrect Answers: ${fullMathQuestions.length - score}</p>
+                                </div>
+                                <button onclick="location.reload()">Restart</button>`;
+        }
+
+        submitBtn.addEventListener("click", () => {
+            const answer = getSelected();
+            if (answer) {
+                if (answer === fullMathQuestions[currentQuiz].correct) {
+                    score++;
+                    feedbackEl.textContent = "Correct!";
+                    feedbackEl.style.color = "green";
+                } else {
+                    feedbackEl.textContent = "Incorrect!";
+                    feedbackEl.style.color = "red";
+                }
+                currentQuiz++;
+                if (currentQuiz < fullMathQuestions.length) {
+                    setTimeout(loadQuiz, 1000);
+                } else {
+                    quizEl.innerHTML = `<h2>You scored ${score}/${fullMathQuestions.length}</h2>
+                                        <div class="summary">
+                                            <h3>Summary:</h3>
+                                            <p>Correct Answers: ${score}</p>
+                                            <p>Incorrect Answers: ${fullMathQuestions.length - score}</p>
+                                        </div>
+                                        <button onclick="location.reload()">Restart</button>`;
+                }
+            }
+        });
+
+        loadQuiz();
+        startTimer();
+    </script>
+
+</body>
+</html>

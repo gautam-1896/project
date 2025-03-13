@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EES Quiz</title>
+    <link rel="icon" type="image/png" href="lggp_logo.png">
+    <style>
+        :root {
+            --bs-gray: #808080;
+            --bs-Lgray: #D3D3D3;
+            --bs-Cgray: #36454F;
+            --bs-Sblue: #ADD8E6;
+            --bs-gray-active: #b0b0b0;
+            --bs-blacke: #282A35;
+            --bs-login: #b4b4b4;
+            --bs-loginH: #969696;
+            --bs-Sblue-hover: #9cc7d6;
+            --bs-pure-black: #000000;
+            --bs-white: #ffffff;
+            --bs-neoWhite: #E7E9E8;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background: var(--bs-neoWhite);
+            color: var(--bs-blacke);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .quiz-container {
+            background: var(--bs-white);
+            padding: 25px;
+            width: 90%;
+            max-width: 500px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.1);
+            position: relative;
+        }
+
+        h2 {
+            margin-bottom: 20px;
+            color: var(--bs-Cgray);
+            font-size: 1.5rem;
+            max-height: 100px; /* Limit height for scrollable area */
+            overflow-y: auto; /* Add scrollbar if content overflows */
+            padding: 10px;
+            border: 1px solid var(--bs-Lgray);
+            border-radius: 5px;
+            text-align: left;
+        }
+
+        .timer {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: var(--bs-Sblue);
+            color: var(--bs-white);
+            padding: 8px 12px;
+            border-radius: 5px;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .progress {
+            width: 100%;
+            background: var(--bs-Lgray);
+            height: 10px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: var(--bs-Sblue);
+            border-radius: 5px;
+            transition: width 0.3s;
+        }
+
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        li {
+            margin: 10px 0;
+            text-align: left;
+        }
+
+        label {
+            cursor: pointer;
+            padding: 12px;
+            display: block;
+            background: var(--bs-Lgray);
+            border-radius: 5px;
+            transition: background 0.3s, transform 0.2s;
+            color: var(--bs-blacke);
+        }
+
+        label:hover {
+            background: var(--bs-gray-active);
+            transform: translateY(-2px);
+        }
+
+        input[type="radio"] {
+            display: none;
+        }
+
+        input[type="radio"]:checked + label {
+            background: var(--bs-Sblue);
+            color: var(--bs-white);
+            font-weight: bold;
+        }
+
+        button {
+            margin-top: 20px;
+            padding: 12px;
+            width: 100%;
+            border: none;
+            background: var(--bs-Sblue);
+            color: var(--bs-white);
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background 0.3s;
+        }
+
+        button:hover {
+            background: var(--bs-Sblue-hover);
+        }
+
+        .feedback {
+            margin-top: 15px;
+            font-size: 14px;
+            color: var(--bs-Cgray);
+            font-weight: bold;
+        }
+
+        .summary {
+            text-align: left;
+            margin-top: 20px;
+        }
+
+        .summary h3 {
+            color: var(--bs-Cgray);
+            margin-bottom: 10px;
+        }
+
+        .summary p {
+            margin: 5px 0;
+            color: var(--bs-blacke);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="quiz-container" id="quiz">
+        <div class="timer" id="timer">30:00</div>
+        <div class="progress">
+            <div class="progress-bar" id="progress-bar"></div>
+        </div>
+        <h2 id="question">Question 1</h2>
+        <ul>
+            <li>
+                <input type="radio" name="answer" id="a" class="answer">
+                <label for="a" id="a_text">Option A</label>
+            </li>
+            <li>
+                <input type="radio" name="answer" id="b" class="answer">
+                <label for="b" id="b_text">Option B</label>
+            </li>
+            <li>
+                <input type="radio" name="answer" id="c" class="answer">
+                <label for="c" id="c_text">Option C</label>
+            </li>
+            <li>
+                <input type="radio" name="answer" id="d" class="answer">
+                <label for="d" id="d_text">Option D</label>
+            </li>
+        </ul>
+        <div class="feedback" id="feedback"></div>
+        <button id="submit">Submit</button>
+    </div>
+
+    <script>
+        const quizData = [
+            // Theory-based questions (1 to 20)
+            {
+                question: "1. Which of the following is NOT a component of the environment?",
+                a: "Atmosphere",
+                b: "Hydrosphere",
+                c: "Biosphere",
+                d: "Robotics",
+                correct: "d"
+            },
+            {
+                question: "2. What is the main cause of ozone layer depletion?",
+                a: "Carbon dioxide emissions",
+                b: "CFCs (Chlorofluorocarbons)",
+                c: "Deforestation",
+                d: "Nuclear radiation",
+                correct: "b"
+            },
+            {
+                question: "3. The term 5R refers to:",
+                a: "Reuse, Reduce, Recycle, Refuse, and Recover",
+                b: "Repair, Restore, Recycle, Reuse, and React",
+                c: "Reduce, Refuse, React, Reuse, and Recycle",
+                d: "Remove, Replace, Recycle, Reduce, and Reuse",
+                correct: "a"
+            },
+            {
+                question: "4. What is the main goal of sustainable development?",
+                a: "Industrial growth",
+                b: "Economic development without harming the environment",
+                c: "Increasing population",
+                d: "Reducing biodiversity",
+                correct: "b"
+            },
+            {
+                question: "5. What does the term Carbon Footprint refer to?",
+                a: "Total carbon content in the atmosphere",
+                b: "Amount of CO₂ released by an individual or activity",
+                c: "A method of carbon storage in the soil",
+                d: "A unit for measuring carbon emissions",
+                correct: "b"
+            },
+            {
+                question: "6. Which of the following is a renewable resource?",
+                a: "Coal",
+                b: "Petroleum",
+                c: "Wind Energy",
+                d: "Natural Gas",
+                correct: "c"
+            },
+            {
+                question: "7. The major cause of deforestation is:",
+                a: "Soil erosion",
+                b: "Industrialization and urbanization",
+                c: "Increase in oxygen levels",
+                d: "Conservation of wildlife",
+                correct: "b"
+            },
+            {
+                question: "8. What is the major impact of overexploitation of natural resources?",
+                a: "Better economic growth",
+                b: "Sustainable development",
+                c: "Environmental degradation",
+                d: "Increased employment opportunities",
+                correct: "c"
+            },
+            {
+                question: "9. Which of the following energy sources is non-renewable?",
+                a: "Solar energy",
+                b: "Hydropower energy",
+                c: "Biomass energy",
+                d: "Nuclear energy",
+                correct: "d"
+            },
+            {
+                question: "10. What is the main reason for biodiversity loss?",
+                a: "Climate change",
+                b: "Habitat destruction",
+                c: "Overexploitation of species",
+                d: "All of the above",
+                correct: "d"
+            },
+            {
+                question: "11. Which of the following ecosystems is considered a hotspot of biodiversity?",
+                a: "Sahara Desert",
+                b: "Amazon Rainforest",
+                c: "Antarctic Ice Sheet",
+                d: "Death Valley",
+                correct: "b"
+            },
+            {
+                question: "12. What is the primary function of an ecosystem?",
+                a: "Increase pollution",
+                b: "Maintain balance in the environment",
+                c: "Destroy biodiversity",
+                d: "Reduce oxygen levels",
+                correct: "b"
+            },
+            {
+                question: "13. Which gas is the major contributor to global warming?",
+                a: "Oxygen",
+                b: "Nitrogen",
+                c: "Carbon dioxide",
+                d: "Hydrogen",
+                correct: "c"
+            },
+            {
+                question: "14. What is the leading cause of soil pollution?",
+                a: "Excessive use of fertilizers and pesticides",
+                b: "Deforestation",
+                c: "Urbanization",
+                d: "All of the above",
+                correct: "d"
+            },
+            {
+                question: "15. Which water pollutant is responsible for eutrophication in lakes?",
+                a: "Nitrates and phosphates",
+                b: "Oxygen",
+                c: "Heavy metals",
+                d: "Oil spills",
+                correct: "a"
+            },
+            {
+                question: "16. What is the permissible noise level in a residential area during daytime?",
+                a: "40 dB",
+                b: "55 dB",
+                c: "70 dB",
+                d: "85 dB",
+                correct: "b"
+            },
+            {
+                question: "17. The main cause of air pollution in urban areas is:",
+                a: "Agriculture",
+                b: "Industrial emissions and vehicle exhaust",
+                c: "Wildlife conservation",
+                d: "Forest reserves",
+                correct: "b"
+            },
+            {
+                question: "18. Which law regulates water pollution in India?",
+                a: "Air Pollution Act",
+                b: "Water (Prevention and Control of Pollution) Act",
+                c: "Wildlife Protection Act",
+                d: "Environment Protection Act",
+                correct: "b"
+            },
+            {
+                question: "19. Which of the following is a sustainable practice?",
+                a: "Using single-use plastics",
+                b: "Overfishing in oceans",
+                c: "Promoting renewable energy sources",
+                d: "Cutting down forests for urbanization",
+                correct: "c"
+            },
+            {
+                question: "20. What is the role of CPCB (Central Pollution Control Board)?",
+                a: "Control environmental pollution in India",
+                b: "Promote deforestation",
+                c: "Increase industrial pollution",
+                d: "Reduce the use of green energy",
+                correct: "a"
+            },
+            // Code-based questions (21 to 30)
+            {
+                question: "21. What is the main cause of water pollution?",
+                a: "Excessive use of fertilizers",
+                b: "Oil spills",
+                c: "Industrial waste disposal",
+                d: "All of the above",
+                correct: "d"
+            },
+            {
+                question: "22. Which of the following is an example of green technology?",
+                a: "Plastic manufacturing",
+                b: "Solar desalination",
+                c: "Burning fossil fuels",
+                d: "Deforestation",
+                correct: "b"
+            },
+            {
+                question: "23. Which of the following laws deals with environmental protection in India?",
+                a: "Indian Penal Code",
+                b: "The Environment Protection Act, 1986",
+                c: "The Companies Act, 2013",
+                d: "The Civil Rights Act",
+                correct: "b"
+            },
+            {
+                question: "24. What does PPP (Public Participation Principle) mean in environmental protection?",
+                a: "Government should take all responsibility",
+                b: "Public should be aware and actively involved",
+                c: "Only industries should contribute to environmental protection",
+                d: "Environmental issues should not be a concern",
+                correct: "b"
+            },
+            {
+                question: "25. Which of the following is a sustainable practice?",
+                a: "Using solar energy",
+                b: "Deforestation for agriculture",
+                c: "Burning waste in open fields",
+                d: "Using chemical pesticides excessively",
+                correct: "a"
+            },
+            {
+                question: "26. Which of the following is a non-renewable resource?",
+                a: "Wind energy",
+                b: "Hydropower energy",
+                c: "Coal",
+                d: "Biomass energy",
+                correct: "c"
+            },
+            {
+                question: "27. The Indian Constitution provides environmental protection under which articles?",
+                a: "Article 21 and Article 45",
+                b: "Article 48-A and Article 51-A(g)",
+                c: "Article 14 and Article 32",
+                d: "Article 19 and Article 356",
+                correct: "b"
+            },
+            {
+                question: "28. What is the purpose of sustainable development goals (SDGs)?",
+                a: "Economic development only",
+                b: "Ensuring a balance between economic growth, social welfare, and environmental protection",
+                c: "Increasing industrialization",
+                d: "Reducing human rights",
+                correct: "b"
+            },
+            {
+                question: "29. Which international agreement aims to reduce global warming?",
+                a: "Kyoto Protocol",
+                b: "TRIPS Agreement",
+                c: "WTO Agreement",
+                d: "SAARC Agreement",
+                correct: "a"
+            },
+            {
+                question: "30. What is the role of Information Technology (IT) in environmental protection?",
+                a: "Spreading environmental awareness",
+                b: "Developing software for monitoring pollution",
+                c: "Using GIS (Geographic Information Systems) for resource management",
+                d: "All of the above",
+                correct: "d"
+            }
+        ];
+
+        let currentQuiz = 0;
+        let score = 0;
+        let timeLeft = 30 * 60;
+
+        const timerEl = document.getElementById("timer");
+        const quizEl = document.getElementById("quiz");
+        const questionEl = document.getElementById("question");
+        const answerEls = document.querySelectorAll(".answer");
+        const a_text = document.getElementById("a_text");
+        const b_text = document.getElementById("b_text");
+        const c_text = document.getElementById("c_text");
+        const d_text = document.getElementById("d_text");
+        const submitBtn = document.getElementById("submit");
+        const feedbackEl = document.getElementById("feedback");
+        const progressBar = document.getElementById("progress-bar");
+
+        function loadQuiz() {
+            deselectAnswers();
+            feedbackEl.textContent = "";
+            const currentQuizData = quizData[currentQuiz];
+            questionEl.innerHTML = `${currentQuizData.question}`;
+            a_text.innerText = currentQuizData.a;
+            b_text.innerText = currentQuizData.b;
+            c_text.innerText = currentQuizData.c;
+            d_text.innerText = currentQuizData.d;
+            updateProgressBar();
+        }
+
+        function deselectAnswers() {
+            answerEls.forEach(answerEl => answerEl.checked = false);
+        }
+
+        function getSelected() {
+            let answer;
+            answerEls.forEach(answerEl => {
+                if (answerEl.checked) {
+                    answer = answerEl.id;
+                }
+            });
+            return answer;
+        }
+
+        function updateProgressBar() {
+            const progress = ((currentQuiz + 1) / quizData.length) * 100;
+            progressBar.style.width = `${progress}%`;
+        }
+
+        function startTimer() {
+            const countdown = setInterval(() => {
+                let minutes = Math.floor(timeLeft / 60);
+                let seconds = timeLeft % 60;
+                timerEl.textContent = `${minutes}:${seconds < 10 ? "0" : ""}${seconds}`;
+                timeLeft--;
+                if (timeLeft < 0) {
+                    clearInterval(countdown);
+                    autoSubmit();
+                }
+            }, 1000);
+        }
+
+        function autoSubmit() {
+            quizEl.innerHTML = `<h2>Time's up! You scored ${score}/${quizData.length}</h2>
+                                <div class="summary">
+                                    <h3>Summary:</h3>
+                                    <p>Correct Answers: ${score}</p>
+                                    <p>Incorrect Answers: ${quizData.length - score}</p>
+                                </div>
+                                <button onclick="location.reload()">Restart</button>`;
+        }
+
+        submitBtn.addEventListener("click", () => {
+            const answer = getSelected();
+            if (answer) {
+                if (answer === quizData[currentQuiz].correct) {
+                    score++;
+                    feedbackEl.textContent = "Correct!";
+                    feedbackEl.style.color = "green";
+                } else {
+                    feedbackEl.textContent = "Incorrect!";
+                    feedbackEl.style.color = "red";
+                }
+                currentQuiz++;
+                if (currentQuiz < quizData.length) {
+                    setTimeout(loadQuiz, 1000);
+                } else {
+                    quizEl.innerHTML = `<h2>You scored ${score}/${quizData.length}</h2>
+                                        <div class="summary">
+                                            <h3>Summary:</h3>
+                                            <p>Correct Answers: ${score}</p>
+                                            <p>Incorrect Answers: ${quizData.length - score}</p>
+                                        </div>
+                                        <button onclick="location.reload()">Restart</button>`;
+                }
+            }
+        });
+
+        // Initialize quiz
+        loadQuiz();
+        startTimer();
+    </script>
+</body>
+</html>

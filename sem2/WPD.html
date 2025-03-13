@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WPD Quiz</title>
+    <link rel="icon" type="image/png" href="lggp_logo.png">
+    <style>
+        :root {
+            --bs-gray: #808080;
+            --bs-Lgray: #D3D3D3;
+            --bs-Cgray: #36454F;
+            --bs-Sblue: #ADD8E6;
+            --bs-gray-active: #b0b0b0;
+            --bs-blacke: #282A35;
+            --bs-login: #b4b4b4;
+            --bs-loginH: #969696;
+            --bs-Sblue-hover: #9cc7d6;
+            --bs-pure-black: #000000;
+            --bs-white: #ffffff;
+            --bs-neoWhite: #E7E9E8;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background: var(--bs-neoWhite);
+            color: var(--bs-blacke);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .quiz-container {
+            background: var(--bs-white);
+            padding: 25px;
+            width: 90%;
+            max-width: 500px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.1);
+            position: relative;
+        }
+
+        h2 {
+            margin-bottom: 20px;
+            color: var(--bs-Cgray);
+            font-size: 1.5rem;
+        }
+
+        .timer {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: var(--bs-Sblue);
+            color: var(--bs-white);
+            padding: 8px 12px;
+            border-radius: 5px;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .progress {
+            width: 100%;
+            background: var(--bs-Lgray);
+            height: 10px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: var(--bs-Sblue);
+            border-radius: 5px;
+            transition: width 0.3s;
+        }
+
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        li {
+            margin: 10px 0;
+            text-align: left;
+        }
+
+        label {
+            cursor: pointer;
+            padding: 12px;
+            display: block;
+            background: var(--bs-Lgray);
+            border-radius: 5px;
+            transition: background 0.3s, transform 0.2s;
+            color: var(--bs-blacke);
+        }
+
+        label:hover {
+            background: var(--bs-gray-active);
+            transform: translateY(-2px);
+        }
+
+        input[type="radio"] {
+            display: none;
+        }
+
+        input[type="radio"]:checked + label {
+            background: var(--bs-Sblue);
+            color: var(--bs-white);
+            font-weight: bold;
+        }
+
+        button {
+            margin-top: 20px;
+            padding: 12px;
+            width: 100%;
+            border: none;
+            background: var(--bs-Sblue);
+            color: var(--bs-white);
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background 0.3s;
+        }
+
+        button:hover {
+            background: var(--bs-Sblue-hover);
+        }
+
+        .feedback {
+            margin-top: 15px;
+            font-size: 14px;
+            color: var(--bs-Cgray);
+            font-weight: bold;
+        }
+
+        .summary {
+            text-align: left;
+            margin-top: 20px;
+        }
+
+        .summary h3 {
+            color: var(--bs-Cgray);
+            margin-bottom: 10px;
+        }
+
+        .summary p {
+            margin: 5px 0;
+            color: var(--bs-blacke);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="quiz-container" id="quiz">
+        <div class="timer" id="timer">30:00</div>
+        <div class="progress">
+            <div class="progress-bar" id="progress-bar"></div>
+        </div>
+        <h2 id="question">Question 1</h2>
+        <ul>
+            <li>
+                <input type="radio" name="answer" id="a" class="answer">
+                <label for="a" id="a_text">Option A</label>
+            </li>
+            <li>
+                <input type="radio" name="answer" id="b" class="answer">
+                <label for="b" id="b_text">Option B</label>
+            </li>
+            <li>
+                <input type="radio" name="answer" id="c" class="answer">
+                <label for="c" id="c_text">Option C</label>
+            </li>
+            <li>
+                <input type="radio" name="answer" id="d" class="answer">
+                <label for="d" id="d_text">Option D</label>
+            </li>
+        </ul>
+        <div class="feedback" id="feedback"></div>
+        <button id="submit">Submit</button>
+    </div>
+
+    <script>
+        const htmlCssQuestions = [
+            {
+                "question": "1. What does HTML stand for?",
+                "a": "Hyper Text Markup Language",
+                "b": "High Text Machine Language",
+                "c": "Hyper Transfer Markup Language",
+                "d": "Home Tool Markup Language",
+                "correct": "a"
+            },
+            {
+                "question": "2. Which HTML tag is used to define an internal style sheet?",
+                "a": "<css>",
+                "b": "<script>",
+                "c": "<style>",
+                "d": "<link>",
+                "correct": "c"
+            },
+            {
+                "question": "3. What is the correct syntax for referring to an external CSS file?",
+                "a": "<stylesheet> style.css </stylesheet>",
+                "b": "<link rel='stylesheet' type='text/css' href='style.css'>",
+                "c": "<css> style.css </css>",
+                "d": "<link> style.css </link>",
+                "correct": "b"
+            },
+            {
+                "question": "4. Which HTML tag is used to define a table?",
+                "a": "<table>",
+                "b": "<tr>",
+                "c": "<td>",
+                "d": "<tab>",
+                "correct": "a"
+            },
+            {
+                "question": "5. Which property is used to change the text color in CSS?",
+                "a": "text-color",
+                "b": "fgcolor",
+                "c": "color",
+                "d": "font-color",
+                "correct": "c"
+            },
+            {
+                "question": "6. Which CSS property controls the text size?",
+                "a": "font-style",
+                "b": "text-size",
+                "c": "font-size",
+                "d": "text-style",
+                "correct": "c"
+            },
+            {
+                "question": "7. Which HTML attribute is used to specify an alternate text for an image?",
+                "a": "title",
+                "b": "alt",
+                "c": "src",
+                "d": "longdesc",
+                "correct": "b"
+            },
+            {
+                "question": "8. What does CSS stand for?",
+                "a": "Creative Style Sheets",
+                "b": "Cascading Style Sheets",
+                "c": "Colorful Style Sheets",
+                "d": "Computer Style Sheets",
+                "correct": "b"
+            },
+            {
+                "question": "9. Which tag is used to create a hyperlink in HTML?",
+                "a": "<link>",
+                "b": "<href>",
+                "c": "<a>",
+                "d": "<hyperlink>",
+                "correct": "c"
+            },
+            {
+                "question": "10. What is the default file extension for HTML files?",
+                "a": ".htm",
+                "b": ".html",
+                "c": ".web",
+                "d": ".doc",
+                "correct": "b"
+            },
+            {
+                "question": "11. What is the correct way to apply a background color in CSS?",
+                "a": "background-color: red;",
+                "b": "bgcolor: red;",
+                "c": "color-background: red;",
+                "d": "background:color red;",
+                "correct": "a"
+            },
+            {
+                "question": "12. Which of the following is not a CSS positioning property?",
+                "a": "static",
+                "b": "absolute",
+                "c": "relative",
+                "d": "floating",
+                "correct": "d"
+            },
+            {
+                "question": "13. Which CSS property is used to make text bold?",
+                "a": "text-bold",
+                "b": "bold",
+                "c": "font-weight",
+                "d": "text-weight",
+                "correct": "c"
+            },
+            {
+                "question": "14. Which HTML tag is used to display a numbered list?",
+                "a": "<ol>",
+                "b": "<ul>",
+                "c": "<list>",
+                "d": "<nl>",
+                "correct": "a"
+            },
+            {
+                "question": "15. What is the correct way to start an ordered list in HTML?",
+                "a": "<ul>",
+                "b": "<ol>",
+                "c": "<li>",
+                "d": "<list>",
+                "correct": "b"
+            },
+            {
+                "question": "16. Which tag is used for the largest heading in HTML?",
+                "a": "<h1>",
+                "b": "<h6>",
+                "c": "<heading>",
+                "d": "<head>",
+                "correct": "a"
+            },
+            {
+                "question": "17. Which of the following is the correct way to comment in HTML?",
+                "a": "// This is a comment",
+                "b": "/* This is a comment */",
+                "c": "<!-- This is a comment -->",
+                "d": "** This is a comment **",
+                "correct": "c"
+            },
+            {
+                "question": "18. Which of the following is a block-level element?",
+                "a": "<span>",
+                "b": "<div>",
+                "c": "<b>",
+                "d": "<i>",
+                "correct": "b"
+            },
+            {
+                "question": "19. How do you create a checkbox in HTML?",
+                "a": "<input type='checkbox'>",
+                "b": "<checkbox>",
+                "c": "<check>",
+                "d": "<input type='box'>",
+                "correct": "a"
+            },
+            {
+                "question": "20. How do you create a drop-down list in HTML?",
+                "a": "<input type='dropdown'>",
+                "b": "<list>",
+                "c": "<select>",
+                "d": "<dropdown>",
+                "correct": "c"
+            },
+            {
+                "question": "21. Which tag is used to define an inline frame?",
+                "a": "<iframe>",
+                "b": "<frame>",
+                "c": "<window>",
+                "d": "<frameset>",
+                "correct": "a"
+            },
+            {
+                "question": "22. Which property is used in CSS to make text italic?",
+                "a": "font-style",
+                "b": "text-decoration",
+                "c": "text-style",
+                "d": "font-italic",
+                "correct": "a"
+            },
+            {
+                "question": "23. How do you add a comment in CSS?",
+                "a": "// This is a comment",
+                "b": "/* This is a comment */",
+                "c": "<!-- This is a comment -->",
+                "d": "** This is a comment **",
+                "correct": "b"
+            },
+            {
+                "question": "24. Which attribute is used to specify that an input field is required?",
+                "a": "validate",
+                "b": "placeholder",
+                "c": "required",
+                "d": "mandatory",
+                "correct": "c"
+            },
+            {
+                "question": "25. What does the 'position: absolute' property do in CSS?",
+                "a": "Positions the element relative to the parent",
+                "b": "Positions the element relative to the viewport",
+                "c": "Positions the element relative to its normal position",
+                "d": "Removes the element from the document flow",
+                "correct": "b"
+            },
+            {
+                "question": "26. Which unit is NOT relative in CSS?",
+                "a": "em",
+                "b": "rem",
+                "c": "px",
+                "d": "%",
+                "correct": "c"
+            },
+            {
+                "question": "27. What does the 'z-index' property in CSS do?",
+                "a": "Controls the visibility of an element",
+                "b": "Specifies the stack order of elements",
+                "c": "Changes the font size",
+                "d": "Defines the element's transparency",
+                "correct": "b"
+            },
+            {
+                "question": "28. Which HTML tag is used to define a footer in a webpage?",
+                "a": "<bottom>",
+                "b": "<footer>",
+                "c": "<end>",
+                "d": "<section>",
+                "correct": "b"
+            },
+            {
+                "question": "29. Which CSS property is used to create space between elements?",
+                "a": "margin",
+                "b": "padding",
+                "c": "border",
+                "d": "spacing",
+                "correct": "a"
+            },
+            {
+                "question": "30. Which HTML5 tag is used to play audio files?",
+                "a": "<mp3>",
+                "b": "<sound>",
+                "c": "<audio>",
+                "d": "<music>",
+                "correct": "c"
+            }
+        ];
+
+        let currentQuiz = 0;
+        let score = 0;
+        let timeLeft = 30 * 60;
+
+        const timerEl = document.getElementById("timer");
+        const quizEl = document.getElementById("quiz");
+        const questionEl = document.getElementById("question");
+        const answerEls = document.querySelectorAll(".answer");
+        const a_text = document.getElementById("a_text");
+        const b_text = document.getElementById("b_text");
+        const c_text = document.getElementById("c_text");
+        const d_text = document.getElementById("d_text");
+        const submitBtn = document.getElementById("submit");
+        const feedbackEl = document.getElementById("feedback");
+        const progressBar = document.getElementById("progress-bar");
+
+        function loadQuiz() {
+            deselectAnswers();
+            feedbackEl.textContent = "";
+            const currentQuizData = htmlCssQuestions[currentQuiz];
+            questionEl.innerText = currentQuizData.question;
+            a_text.innerText = currentQuizData.a;
+            b_text.innerText = currentQuizData.b;
+            c_text.innerText = currentQuizData.c;
+            d_text.innerText = currentQuizData.d;
+            updateProgressBar();
+        }
+
+        function deselectAnswers() {
+            answerEls.forEach(answerEl => answerEl.checked = false);
+        }
+
+        function getSelected() {
+            let answer;
+            answerEls.forEach(answerEl => {
+                if (answerEl.checked) {
+                    answer = answerEl.id;
+                }
+            });
+            return answer;
+        }
+
+        function updateProgressBar() {
+            const progress = ((currentQuiz + 1) / htmlCssQuestions.length) * 100;
+            progressBar.style.width = `${progress}%`;
+        }
+
+        function startTimer() {
+            const countdown = setInterval(() => {
+                let minutes = Math.floor(timeLeft / 60);
+                let seconds = timeLeft % 60;
+                timerEl.textContent = `${minutes}:${seconds < 10 ? "0" : ""}${seconds}`;
+                timeLeft--;
+                if (timeLeft < 0) {
+                    clearInterval(countdown);
+                    autoSubmit();
+                }
+            }, 1000);
+        }
+
+        function autoSubmit() {
+            quizEl.innerHTML = `<h2>Time's up! You scored ${score}/${htmlCssQuestions.length}</h2>
+                                <div class="summary">
+                                    <h3>Summary:</h3>
+                                    <p>Correct Answers: ${score}</p>
+                                    <p>Incorrect Answers: ${htmlCssQuestions.length - score}</p>
+                                </div>
+                                <button onclick="location.reload()">Restart</button>`;
+        }
+
+        submitBtn.addEventListener("click", () => {
+            const answer = getSelected();
+            if (answer) {
+                if (answer === htmlCssQuestions[currentQuiz].correct) {
+                    score++;
+                    feedbackEl.textContent = "Correct!";
+                    feedbackEl.style.color = "green";
+                } else {
+                    feedbackEl.textContent = "Incorrect!";
+                    feedbackEl.style.color = "red";
+                }
+                currentQuiz++;
+                if (currentQuiz < htmlCssQuestions.length) {
+                    setTimeout(loadQuiz, 1000);
+                } else {
+                    quizEl.innerHTML = `<h2>You scored ${score}/${htmlCssQuestions.length}</h2>
+                                        <div class="summary">
+                                            <h3>Summary:</h3>
+                                            <p>Correct Answers: ${score}</p>
+                                            <p>Incorrect Answers: ${htmlCssQuestions.length - score}</p>
+                                        </div>
+                                        <button onclick="location.reload()">Restart</button>`;
+                }
+            }
+        });
+
+        loadQuiz();
+        startTimer();
+    </script>
+
+</body>
+</html>

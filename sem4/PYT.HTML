@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Python Programming Quiz</title>
+    <link rel="icon" type="image/png" href="lggp_logo.png">
+    <style>
+        :root {
+            --bs-gray: #808080;
+            --bs-Lgray: #D3D3D3;
+            --bs-Cgray: #36454F;
+            --bs-Sblue: #ADD8E6;
+            --bs-gray-active: #b0b0b0;
+            --bs-blacke: #282A35;
+            --bs-login: #b4b4b4;
+            --bs-loginH: #969696;
+            --bs-Sblue-hover: #9cc7d6;
+            --bs-pure-black: #000000;
+            --bs-white: #ffffff;
+            --bs-neoWhite: #E7E9E8;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background: var(--bs-neoWhite);
+            color: var(--bs-blacke);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .quiz-container {
+            background: var(--bs-white);
+            padding: 25px;
+            width: 90%;
+            max-width: 500px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.1);
+            position: relative;
+        }
+
+        h2 {
+            margin-bottom: 20px;
+            color: var(--bs-Cgray);
+            font-size: 1.5rem;
+            max-height: 100px; /* Limit height for scrollable area */
+            overflow-y: auto; /* Add scrollbar if content overflows */
+            padding: 10px;
+            border: 1px solid var(--bs-Lgray);
+            border-radius: 5px;
+            text-align: left;
+        }
+
+        .timer {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: var(--bs-Sblue);
+            color: var(--bs-white);
+            padding: 8px 12px;
+            border-radius: 5px;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .progress {
+            width: 100%;
+            background: var(--bs-Lgray);
+            height: 10px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: var(--bs-Sblue);
+            border-radius: 5px;
+            transition: width 0.3s;
+        }
+
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        li {
+            margin: 10px 0;
+            text-align: left;
+        }
+
+        label {
+            cursor: pointer;
+            padding: 12px;
+            display: block;
+            background: var(--bs-Lgray);
+            border-radius: 5px;
+            transition: background 0.3s, transform 0.2s;
+            color: var(--bs-blacke);
+        }
+
+        label:hover {
+            background: var(--bs-gray-active);
+            transform: translateY(-2px);
+        }
+
+        input[type="radio"] {
+            display: none;
+        }
+
+        input[type="radio"]:checked + label {
+            background: var(--bs-Sblue);
+            color: var(--bs-white);
+            font-weight: bold;
+        }
+
+        button {
+            margin-top: 20px;
+            padding: 12px;
+            width: 100%;
+            border: none;
+            background: var(--bs-Sblue);
+            color: var(--bs-white);
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background 0.3s;
+        }
+
+        button:hover {
+            background: var(--bs-Sblue-hover);
+        }
+
+        .feedback {
+            margin-top: 15px;
+            font-size: 14px;
+            color: var(--bs-Cgray);
+            font-weight: bold;
+        }
+
+        .summary {
+            text-align: left;
+            margin-top: 20px;
+        }
+
+        .summary h3 {
+            color: var(--bs-Cgray);
+            margin-bottom: 10px;
+        }
+
+        .summary p {
+            margin: 5px 0;
+            color: var(--bs-blacke);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="quiz-container" id="quiz">
+        <div class="timer" id="timer">30:00</div>
+        <div class="progress">
+            <div class="progress-bar" id="progress-bar"></div>
+        </div>
+        <h2 id="question">Question 1</h2>
+        <ul>
+            <li>
+                <input type="radio" name="answer" id="a" class="answer">
+                <label for="a" id="a_text">Option A</label>
+            </li>
+            <li>
+                <input type="radio" name="answer" id="b" class="answer">
+                <label for="b" id="b_text">Option B</label>
+            </li>
+            <li>
+                <input type="radio" name="answer" id="c" class="answer">
+                <label for="c" id="c_text">Option C</label>
+            </li>
+            <li>
+                <input type="radio" name="answer" id="d" class="answer">
+                <label for="d" id="d_text">Option D</label>
+            </li>
+        </ul>
+        <div class="feedback" id="feedback"></div>
+        <button id="submit">Submit</button>
+    </div>
+
+    <script>
+        const quizData = [
+            {
+                question: "1. Which function is used to take input from the user in Python?",
+                a: "input()",
+                b: "scan()",
+                c: "get()",
+                d: "read()",
+                correct: "a"
+            },
+            {
+                question: "2. Which of the following is used to print output in Python?",
+                a: "display()",
+                b: "print()",
+                c: "echo()",
+                d: "write()",
+                correct: "b"
+            },
+            {
+                question: "3. What will be the output of print(2**3)?",
+                a: "6",
+                b: "8",
+                c: "9",
+                d: "16",
+                correct: "b"
+            },
+            {
+                question: "4. Which statement is used for decision-making in Python?",
+                a: "switch",
+                b: "case",
+                c: "if",
+                d: "goto",
+                correct: "c"
+            },
+            {
+                question: "5. Which of the following is a valid loop in Python?",
+                a: "for",
+                b: "while",
+                c: "do-while",
+                d: "Both a and b",
+                correct: "d"
+            },
+            {
+                question: "6. How do you define a list in Python?",
+                a: "{1,2,3}",
+                b: "[1,2,3]",
+                c: "(1,2,3)",
+                d: "<1,2,3>",
+                correct: "b"
+            },
+            {
+                question: "7. Which of the following data structures is immutable in Python?",
+                a: "List",
+                b: "Tuple",
+                c: "Dictionary",
+                d: "Set",
+                correct: "b"
+            },
+            {
+                question: "8. How do you remove an element from a list?",
+                a: "remove()",
+                b: "delete()",
+                c: "discard()",
+                d: "clear()",
+                correct: "a"
+            },
+            {
+                question: "9. What is the correct way to define a function in Python?",
+                a: "def function_name():",
+                b: "function function_name():",
+                c: "define function_name():",
+                d: "create function_name():",
+                correct: "a"
+            },
+            {
+                question: "10. What is a lambda function in Python?",
+                a: "Anonymous function",
+                b: "Function with multiple arguments",
+                c: "Function with no return type",
+                d: "Function without parameters",
+                correct: "a"
+            },
+            {
+                question: "11. How do you import a module in Python?",
+                a: "import module_name",
+                b: "include module_name",
+                c: "using module_name",
+                d: "load module_name",
+                correct: "a"
+            },
+            {
+                question: "12. What is the self parameter in Python?",
+                a: "Refers to the current object",
+                b: "Refers to the parent class",
+                c: "Refers to a global variable",
+                d: "Refers to a static variable",
+                correct: "a"
+            },
+            {
+                question: "13. How do you create an object of a class in Python?",
+                a: "obj = ClassName()",
+                b: "obj = new ClassName()",
+                c: "ClassName obj = new()",
+                d: "obj = create ClassName()",
+                correct: "a"
+            },
+            {
+                question: "14. Which type of inheritance is not supported in Python?",
+                a: "Single",
+                b: "Multiple",
+                c: "Multilevel",
+                d: "Hybrid",
+                correct: "d"
+            },
+            {
+                question: "15. Which operator is used for method overloading in Python?",
+                a: "+",
+                b: "*",
+                c: "**",
+                d: "Method overloading is not supported",
+                correct: "d"
+            },
+            {
+                question: "16. Which of the following is a Python GUI package?",
+                a: "PyGUI",
+                b: "Tkinter",
+                c: "PyQt",
+                d: "Both b and c",
+                correct: "d"
+            },
+            {
+                question: "17. What is the use of pandas in Python?",
+                a: "GUI Development",
+                b: "Database Management",
+                c: "Data Manipulation",
+                d: "Image Processing",
+                correct: "c"
+            },
+            {
+                question: "18. How do you install external Python packages?",
+                a: "setup.py install",
+                b: "pip install package_name",
+                c: "install package_name",
+                d: "python install package_name",
+                correct: "b"
+            },
+            {
+                question: "19. Which method is used to fetch all records from a database in Python?",
+                a: "fetchall()",
+                b: "fetchone()",
+                c: "get_records()",
+                d: "retrieve()",
+                correct: "a"
+            },
+            {
+                question: "20. Which of the following is a valid variable name in Python?",
+                a: "1variable",
+                b: "_variable",
+                c: "variable-name",
+                d: "variable@name",
+                correct: "b"
+            },
+            {
+                question: "21. What will be the output of the following code?",
+                code: `x = 5
+y = 2
+print(x // y)`,
+                a: "2",
+                b: "2.5",
+                c: "3",
+                d: "Error",
+                correct: "a"
+            },
+            {
+                question: "22. What will be the output of the following code?",
+                code: `def add(a, b):
+    return a + b
+print(add(3, 4))`,
+                a: "7",
+                b: "34",
+                c: "Error",
+                d: "None",
+                correct: "a"
+            },
+            {
+                question: "23. What will be the output of the following code?",
+                code: `x = [1, 2, 3]
+y = x
+y.append(4)
+print(x)`,
+                a: "[1, 2, 3]",
+                b: "[1, 2, 3, 4]",
+                c: "Error",
+                d: "None",
+                correct: "b"
+            },
+            {
+                question: "24. What will be the output of the following code?",
+                code: `x = 10
+def func():
+    global x
+    x = 20
+func()
+print(x)`,
+                a: "10",
+                b: "20",
+                c: "Error",
+                d: "None",
+                correct: "b"
+            },
+            {
+                question: "25. What will be the output of the following code?",
+                code: `x = lambda a, b: a * b
+print(x(5, 6))`,
+                a: "11",
+                b: "30",
+                c: "Error",
+                d: "None",
+                correct: "b"
+            },
+            {
+                question: "26. What will be the output of the following code?",
+                code: `x = [1, 2, 3]
+y = x.copy()
+y.append(4)
+print(x)`,
+                a: "[1, 2, 3]",
+                b: "[1, 2, 3, 4]",
+                c: "Error",
+                d: "None",
+                correct: "a"
+            },
+            {
+                question: "27. What will be the output of the following code?",
+                code: `x = "Hello"
+print(x[::-1])`,
+                a: "Hello",
+                b: "olleH",
+                c: "Error",
+                d: "None",
+                correct: "b"
+            },
+            {
+                question: "28. What will be the output of the following code?",
+                code: `x = 5
+if x > 2:
+    print("Greater")
+else:
+    print("Smaller")`,
+                a: "Greater",
+                b: "Smaller",
+                c: "Error",
+                d: "None",
+                correct: "a"
+            },
+            {
+                question: "29. What will be the output of the following code?",
+                code: `x = [1, 2, 3]
+y = [4, 5, 6]
+print(x + y)`,
+                a: "[1, 2, 3, 4, 5, 6]",
+                b: "[5, 7, 9]",
+                c: "Error",
+                d: "None",
+                correct: "a"
+            },
+            {
+                question: "30. What will be the output of the following code?",
+                code: `x = 10
+def func():
+    x = 20
+    print(x)
+func()
+print(x)`,
+                a: "20\n10",
+                b: "10\n20",
+                c: "Error",
+                d: "None",
+                correct: "a"
+            }
+        ];
+        let currentQuiz = 0;
+        let score = 0;
+        let timeLeft = 30 * 60;
+
+        const timerEl = document.getElementById("timer");
+        const quizEl = document.getElementById("quiz");
+        const questionEl = document.getElementById("question");
+        const answerEls = document.querySelectorAll(".answer");
+        const a_text = document.getElementById("a_text");
+        const b_text = document.getElementById("b_text");
+        const c_text = document.getElementById("c_text");
+        const d_text = document.getElementById("d_text");
+        const submitBtn = document.getElementById("submit");
+        const feedbackEl = document.getElementById("feedback");
+        const progressBar = document.getElementById("progress-bar");
+
+        function loadQuiz() {
+            deselectAnswers();
+            feedbackEl.textContent = "";
+            const currentQuizData = quizData[currentQuiz];
+            questionEl.innerHTML = `${currentQuizData.question}<br><pre>${currentQuizData.code || ""}</pre>`;
+            a_text.innerText = currentQuizData.a;
+            b_text.innerText = currentQuizData.b;
+            c_text.innerText = currentQuizData.c;
+            d_text.innerText = currentQuizData.d;
+            updateProgressBar();
+        }
+
+        function deselectAnswers() {
+            answerEls.forEach(answerEl => answerEl.checked = false);
+        }
+
+        function getSelected() {
+            let answer;
+            answerEls.forEach(answerEl => {
+                if (answerEl.checked) {
+                    answer = answerEl.id;
+                }
+            });
+            return answer;
+        }
+
+        function updateProgressBar() {
+            const progress = ((currentQuiz + 1) / quizData.length) * 100;
+            progressBar.style.width = `${progress}%`;
+        }
+
+        function startTimer() {
+            const countdown = setInterval(() => {
+                let minutes = Math.floor(timeLeft / 60);
+                let seconds = timeLeft % 60;
+                timerEl.textContent = `${minutes}:${seconds < 10 ? "0" : ""}${seconds}`;
+                timeLeft--;
+                if (timeLeft < 0) {
+                    clearInterval(countdown);
+                    autoSubmit();
+                }
+            }, 1000);
+        }
+
+        function autoSubmit() {
+            quizEl.innerHTML = `<h2>Time's up! You scored ${score}/${quizData.length}</h2>
+                                <div class="summary">
+                                    <h3>Summary:</h3>
+                                    <p>Correct Answers: ${score}</p>
+                                    <p>Incorrect Answers: ${quizData.length - score}</p>
+                                </div>
+                                <button onclick="location.reload()">Restart</button>`;
+        }
+
+        submitBtn.addEventListener("click", () => {
+            const answer = getSelected();
+            if (answer) {
+                if (answer === quizData[currentQuiz].correct) {
+                    score++;
+                    feedbackEl.textContent = "Correct!";
+                    feedbackEl.style.color = "green";
+                } else {
+                    feedbackEl.textContent = "Incorrect!";
+                    feedbackEl.style.color = "red";
+                }
+                currentQuiz++;
+                if (currentQuiz < quizData.length) {
+                    setTimeout(loadQuiz, 1000);
+                } else {
+                    quizEl.innerHTML = `<h2>You scored ${score}/${quizData.length}</h2>
+                                        <div class="summary">
+                                            <h3>Summary:</h3>
+                                            <p>Correct Answers: ${score}</p>
+                                            <p>Incorrect Answers: ${quizData.length - score}</p>
+                                        </div>
+                                        <button onclick="location.reload()">Restart</button>`;
+                }
+            }
+        });
+
+        // Initialize quiz
+        loadQuiz();
+        startTimer();
+    </script>
+</body>
+</html>

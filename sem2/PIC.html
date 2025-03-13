@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title> Programming IN C Quiz</title>
+    <link rel="icon" type="image/png" href="lggp_logo.png">
+    <style>
+        :root {
+            --bs-gray: #808080;
+            --bs-Lgray: #D3D3D3;
+            --bs-Cgray: #36454F;
+            --bs-Sblue: #ADD8E6;
+            --bs-gray-active: #b0b0b0;
+            --bs-blacke: #282A35;
+            --bs-login: #b4b4b4;
+            --bs-loginH: #969696;
+            --bs-Sblue-hover: #9cc7d6;
+            --bs-pure-black: #000000;
+            --bs-white: #ffffff;
+            --bs-neoWhite: #E7E9E8;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background: var(--bs-neoWhite);
+            color: var(--bs-blacke);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .quiz-container {
+            background: var(--bs-white);
+            padding: 25px;
+            width: 90%;
+            max-width: 500px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.1);
+            position: relative;
+        }
+
+        h2 {
+            margin-bottom: 20px;
+            color: var(--bs-Cgray);
+            font-size: 1.5rem;
+        }
+
+        .timer {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: var(--bs-Sblue);
+            color: var(--bs-white);
+            padding: 8px 12px;
+            border-radius: 5px;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .progress {
+            width: 100%;
+            background: var(--bs-Lgray);
+            height: 10px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: var(--bs-Sblue);
+            border-radius: 5px;
+            transition: width 0.3s;
+        }
+
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        li {
+            margin: 10px 0;
+            text-align: left;
+        }
+
+        label {
+            cursor: pointer;
+            padding: 12px;
+            display: block;
+            background: var(--bs-Lgray);
+            border-radius: 5px;
+            transition: background 0.3s, transform 0.2s;
+            color: var(--bs-blacke);
+        }
+
+        label:hover {
+            background: var(--bs-gray-active);
+            transform: translateY(-2px);
+        }
+
+        input[type="radio"] {
+            display: none;
+        }
+
+        input[type="radio"]:checked + label {
+            background: var(--bs-Sblue);
+            color: var(--bs-white);
+            font-weight: bold;
+        }
+
+        button {
+            margin-top: 20px;
+            padding: 12px;
+            width: 100%;
+            border: none;
+            background: var(--bs-Sblue);
+            color: var(--bs-white);
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background 0.3s;
+        }
+
+        button:hover {
+            background: var(--bs-Sblue-hover);
+        }
+
+        .feedback {
+            margin-top: 15px;
+            font-size: 14px;
+            color: var(--bs-Cgray);
+            font-weight: bold;
+        }
+
+        .summary {
+            text-align: left;
+            margin-top: 20px;
+        }
+
+        .summary h3 {
+            color: var(--bs-Cgray);
+            margin-bottom: 10px;
+        }
+
+        .summary p {
+            margin: 5px 0;
+            color: var(--bs-blacke);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="quiz-container" id="quiz">
+        <div class="timer" id="timer">30:00</div>
+        <div class="progress">
+            <div class="progress-bar" id="progress-bar"></div>
+        </div>
+        <h2 id="question">Question 1</h2>
+        <ul>
+            <li>
+                <input type="radio" name="answer" id="a" class="answer">
+                <label for="a" id="a_text">Option A</label>
+            </li>
+            <li>
+                <input type="radio" name="answer" id="b" class="answer">
+                <label for="b" id="b_text">Option B</label>
+            </li>
+            <li>
+                <input type="radio" name="answer" id="c" class="answer">
+                <label for="c" id="c_text">Option C</label>
+            </li>
+            <li>
+                <input type="radio" name="answer" id="d" class="answer">
+                <label for="d" id="d_text">Option D</label>
+            </li>
+        </ul>
+        <div class="feedback" id="feedback"></div>
+        <button id="submit">Submit</button>
+    </div>
+
+    <script>
+        const cQuestions = [
+            {
+                "question": "1. Which of the following is the correct syntax to declare a variable in C?",
+                "a": "var x;",
+                "b": "int x;",
+                "c": "x = int;",
+                "d": "declare x as int;",
+                "correct": "b"
+            },
+            {
+                "question": "2. What is the default return type of the main() function in C?",
+                "a": "void",
+                "b": "char",
+                "c": "int",
+                "d": "float",
+                "correct": "c"
+            },
+            {
+                "question": "3. Which operator is used to get the memory address of a variable?",
+                "a": "&",
+                "b": "*",
+                "c": "#",
+                "d": "%",
+                "correct": "a"
+            },
+            {
+                "question": "4. Which of the following is a valid keyword in C?",
+                "a": "main",
+                "b": "return",
+                "c": "printf",
+                "d": "define",
+                "correct": "b"
+            },
+            {
+                "question": "5. How is a single-line comment written in C?",
+                "a": "// This is a comment",
+                "b": "/* This is a comment */",
+                "c": "# This is a comment",
+                "d": "-- This is a comment",
+                "correct": "a"
+            },
+            {
+                "question": "6. What is the output of printf(\"%d\", 5/2);?",
+                "a": "2.5",
+                "b": "2",
+                "c": "5/2",
+                "d": "Error",
+                "correct": "b"
+            },
+            {
+                "question": "7. Which function is used to read input from the user?",
+                "a": "input()",
+                "b": "getchar()",
+                "c": "scanf()",
+                "d": "read()",
+                "correct": "c"
+            },
+            {
+                "question": "8. What is the purpose of the 'sizeof' operator?",
+                "a": "Returns the size of the variable",
+                "b": "Returns the size of the function",
+                "c": "Returns the length of a string",
+                "d": "Returns the number of elements in an array",
+                "correct": "a"
+            },
+            {
+                "question": "9. Which looping construct is used when the number of iterations is known beforehand?",
+                "a": "while",
+                "b": "do-while",
+                "c": "for",
+                "d": "switch",
+                "correct": "c"
+            },
+            {
+                "question": "10. Which function is used to terminate the execution of a loop?",
+                "a": "exit()",
+                "b": "return",
+                "c": "break",
+                "d": "continue",
+                "correct": "c"
+            },
+            {
+                "question": "11. What will be the output of the following code? \n int x = 10; \n printf(\"%d\", x++);",
+                "a": "10",
+                "b": "11",
+                "c": "9",
+                "d": "Error",
+                "correct": "a"
+            },
+            {
+                "question": "12. Which of the following data types can store a single character?",
+                "a": "int",
+                "b": "char",
+                "c": "float",
+                "d": "double",
+                "correct": "b"
+            },
+            {
+                "question": "13. What is the purpose of the 'return' statement in C?",
+                "a": "To end a loop",
+                "b": "To terminate the function and return a value",
+                "c": "To print output",
+                "d": "To exit the program",
+                "correct": "b"
+            },
+            {
+                "question": "14. What is the correct way to declare a pointer?",
+                "a": "int ptr;",
+                "b": "int *ptr;",
+                "c": "pointer int ptr;",
+                "d": "ptr int*;",
+                "correct": "b"
+            },
+            {
+                "question": "15. Which statement is used to skip an iteration of a loop?",
+                "a": "exit",
+                "b": "return",
+                "c": "break",
+                "d": "continue",
+                "correct": "d"
+            },
+            {
+                "question": "16. What will be the output of the following code? \n int x = 5; \n printf(\"%d\", x == 5);",
+                "a": "0",
+                "b": "1",
+                "c": "5",
+                "d": "Error",
+                "correct": "b"
+            },
+            {
+                "question": "17. How do you define an array of 10 integers?",
+                "a": "int arr(10);",
+                "b": "int arr[10];",
+                "c": "array arr[10];",
+                "d": "int array[10];",
+                "correct": "b"
+            },
+            {
+                "question": "18. Which operator is used to access the value at the address stored in a pointer?",
+                "a": "&",
+                "b": "*",
+                "c": "->",
+                "d": "sizeof",
+                "correct": "b"
+            },
+            {
+                "question": "19. What is the purpose of 'malloc()' function?",
+                "a": "Allocate memory dynamically",
+                "b": "Free allocated memory",
+                "c": "Terminate the program",
+                "d": "Perform mathematical calculations",
+                "correct": "a"
+            },
+            {
+                "question": "20. Which of the following header files is required for memory allocation functions?",
+                "a": "stdlib.h",
+                "b": "stdio.h",
+                "c": "math.h",
+                "d": "string.h",
+                "correct": "a"
+            },
+            {
+                "question": "21. What is a structure in C?",
+                "a": "A collection of variables of different data types",
+                "b": "A function",
+                "c": "A pointer",
+                "d": "An array",
+                "correct": "a"
+            },
+            {
+                "question": "22. How do you declare a function in C?",
+                "a": "function myFunc();",
+                "b": "void myFunc();",
+                "c": "myFunc(void);",
+                "d": "declare myFunc();",
+                "correct": "b"
+            },
+            {
+                "question": "23. Which keyword is used to define a constant value?",
+                "a": "define",
+                "b": "const",
+                "c": "constant",
+                "d": "static",
+                "correct": "b"
+            },
+            {
+                "question": "24. What will 'strlen(\"Hello\")' return?",
+                "a": "4",
+                "b": "5",
+                "c": "6",
+                "d": "Error",
+                "correct": "b"
+            },
+            {
+                "question": "25. What is the output of 'printf(\"%d\", 3 * 4);'?",
+                "a": "3*4",
+                "b": "12",
+                "c": "34",
+                "d": "Error",
+                "correct": "b"
+            },
+            {
+                "question": "26. Which function is used to copy strings?",
+                "a": "strcopy",
+                "b": "copy()",
+                "c": "strcpy()",
+                "d": "copystr()",
+                "correct": "c"
+            },
+            {
+                "question": "27. What is recursion?",
+                "a": "A function calling itself",
+                "b": "A loop",
+                "c": "A pointer function",
+                "d": "A structure",
+                "correct": "a"
+            },
+            {
+                "question": "28. Which operator is used to access a member of a structure using a pointer?",
+                "a": ".",
+                "b": "->",
+                "c": "&",
+                "d": "*",
+                "correct": "b"
+            },
+            {
+                "question": "29. What is the output of '5 & 3' in C?",
+                "a": "5",
+                "b": "3",
+                "c": "1",
+                "d": "2",
+                "correct": "c"
+            },
+            {
+                "question": "30. Which of the following is NOT a storage class in C?",
+                "a": "auto",
+                "b": "register",
+                "c": "static",
+                "d": "public",
+                "correct": "d"
+            }
+        ];
+
+        let currentQuiz = 0;
+        let score = 0;
+        let timeLeft = 30 * 60;
+
+        const timerEl = document.getElementById("timer");
+        const quizEl = document.getElementById("quiz");
+        const questionEl = document.getElementById("question");
+        const answerEls = document.querySelectorAll(".answer");
+        const a_text = document.getElementById("a_text");
+        const b_text = document.getElementById("b_text");
+        const c_text = document.getElementById("c_text");
+        const d_text = document.getElementById("d_text");
+        const submitBtn = document.getElementById("submit");
+        const feedbackEl = document.getElementById("feedback");
+        const progressBar = document.getElementById("progress-bar");
+
+        function loadQuiz() {
+            deselectAnswers();
+            feedbackEl.textContent = "";
+            const currentQuizData = cQuestions[currentQuiz];
+            questionEl.innerText = currentQuizData.question;
+            a_text.innerText = currentQuizData.a;
+            b_text.innerText = currentQuizData.b;
+            c_text.innerText = currentQuizData.c;
+            d_text.innerText = currentQuizData.d;
+            updateProgressBar();
+        }
+
+        function deselectAnswers() {
+            answerEls.forEach(answerEl => answerEl.checked = false);
+        }
+
+        function getSelected() {
+            let answer;
+            answerEls.forEach(answerEl => {
+                if (answerEl.checked) {
+                    answer = answerEl.id;
+                }
+            });
+            return answer;
+        }
+
+        function updateProgressBar() {
+            const progress = ((currentQuiz + 1) / cQuestions.length) * 100;
+            progressBar.style.width = `${progress}%`;
+        }
+
+        function startTimer() {
+            const countdown = setInterval(() => {
+                let minutes = Math.floor(timeLeft / 60);
+                let seconds = timeLeft % 60;
+                timerEl.textContent = `${minutes}:${seconds < 10 ? "0" : ""}${seconds}`;
+                timeLeft--;
+                if (timeLeft < 0) {
+                    clearInterval(countdown);
+                    autoSubmit();
+                }
+            }, 1000);
+        }
+
+        function autoSubmit() {
+            quizEl.innerHTML = `<h2>Time's up! You scored ${score}/${cQuestions.length}</h2>
+                                <div class="summary">
+                                    <h3>Summary:</h3>
+                                    <p>Correct Answers: ${score}</p>
+                                    <p>Incorrect Answers: ${cQuestions.length - score}</p>
+                                </div>
+                                <button onclick="location.reload()">Restart</button>`;
+        }
+
+        submitBtn.addEventListener("click", () => {
+            const answer = getSelected();
+            if (answer) {
+                if (answer === cQuestions[currentQuiz].correct) {
+                    score++;
+                    feedbackEl.textContent = "Correct!";
+                    feedbackEl.style.color = "green";
+                } else {
+                    feedbackEl.textContent = "Incorrect!";
+                    feedbackEl.style.color = "red";
+                }
+                currentQuiz++;
+                if (currentQuiz < cQuestions.length) {
+                    setTimeout(loadQuiz, 1000);
+                } else {
+                    quizEl.innerHTML = `<h2>You scored ${score}/${cQuestions.length}</h2>
+                                        <div class="summary">
+                                            <h3>Summary:</h3>
+                                            <p>Correct Answers: ${score}</p>
+                                            <p>Incorrect Answers: ${cQuestions.length - score}</p>
+                                        </div>
+                                        <button onclick="location.reload()">Restart</button>`;
+                }
+            }
+        });
+
+        loadQuiz();
+        startTimer();
+    </script>
+
+</body>
+</html>

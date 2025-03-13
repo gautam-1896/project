@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ICT Quiz</title>
+    <link rel="icon" type="image/png" href="lggp_logo.png">
+    <style>
+        :root {
+            --bs-gray: #808080;
+            --bs-Lgray: #D3D3D3;
+            --bs-Cgray: #36454F;
+            --bs-Sblue: #ADD8E6;
+            --bs-gray-active: #b0b0b0;
+            --bs-blacke: #282A35;
+            --bs-login: #b4b4b4;
+            --bs-loginH: #969696;
+            --bs-Sblue-hover: #9cc7d6;
+            --bs-pure-black: #000000;
+            --bs-white: #ffffff;
+            --bs-neoWhite: #E7E9E8;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background: var(--bs-neoWhite);
+            color: var(--bs-blacke);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .quiz-container {
+            background: var(--bs-white);
+            padding: 25px;
+            width: 90%;
+            max-width: 500px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.1);
+            position: relative;
+        }
+
+        h2 {
+            margin-bottom: 20px;
+            color: var(--bs-Cgray);
+            font-size: 1.5rem;
+        }
+
+        .timer {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: var(--bs-Sblue);
+            color: var(--bs-white);
+            padding: 8px 12px;
+            border-radius: 5px;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .progress {
+            width: 100%;
+            background: var(--bs-Lgray);
+            height: 10px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: var(--bs-Sblue);
+            border-radius: 5px;
+            transition: width 0.3s;
+        }
+
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        li {
+            margin: 10px 0;
+            text-align: left;
+        }
+
+        label {
+            cursor: pointer;
+            padding: 12px;
+            display: block;
+            background: var(--bs-Lgray);
+            border-radius: 5px;
+            transition: background 0.3s, transform 0.2s;
+            color: var(--bs-blacke);
+        }
+
+        label:hover {
+            background: var(--bs-gray-active);
+            transform: translateY(-2px);
+        }
+
+        input[type="radio"] {
+            display: none;
+        }
+
+        input[type="radio"]:checked + label {
+            background: var(--bs-Sblue);
+            color: var(--bs-white);
+            font-weight: bold;
+        }
+
+        button {
+            margin-top: 20px;
+            padding: 12px;
+            width: 100%;
+            border: none;
+            background: var(--bs-Sblue);
+            color: var(--bs-white);
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background 0.3s;
+        }
+
+        button:hover {
+            background: var(--bs-Sblue-hover);
+        }
+
+        .feedback {
+            margin-top: 15px;
+            font-size: 14px;
+            color: var(--bs-Cgray);
+            font-weight: bold;
+        }
+
+        .summary {
+            text-align: left;
+            margin-top: 20px;
+        }
+
+        .summary h3 {
+            color: var(--bs-Cgray);
+            margin-bottom: 10px;
+        }
+
+        .summary p {
+            margin: 5px 0;
+            color: var(--bs-blacke);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="quiz-container" id="quiz">
+        <div class="timer" id="timer">30:00</div>
+        <div class="progress">
+            <div class="progress-bar" id="progress-bar"></div>
+        </div>
+        <h2 id="question">Question 1</h2>
+        <ul>
+            <li>
+                <input type="radio" name="answer" id="a" class="answer">
+                <label for="a" id="a_text">Option A</label>
+            </li>
+            <li>
+                <input type="radio" name="answer" id="b" class="answer">
+                <label for="b" id="b_text">Option B</label>
+            </li>
+            <li>
+                <input type="radio" name="answer" id="c" class="answer">
+                <label for="c" id="c_text">Option C</label>
+            </li>
+            <li>
+                <input type="radio" name="answer" id="d" class="answer">
+                <label for="d" id="d_text">Option D</label>
+            </li>
+        </ul>
+        <div class="feedback" id="feedback"></div>
+        <button id="submit">Submit</button>
+    </div>
+
+    <script>
+        const quizData = [
+            {
+                question: "1. Which component is considered the brain of the computer?",
+                a: "CPU",
+                b: "RAM",
+                c: "Hard Disk",
+                d: "Monitor",
+                correct: "a"
+            },
+            {
+                question: "2. Which of the following is an example of volatile memory?",
+                a: "ROM",
+                b: "Cache",
+                c: "RAM",
+                d: "Hard Disk",
+                correct: "c"
+            },
+            {
+                question: "3. Which software type acts as an interface between hardware and user applications?",
+                a: "Application Software",
+                b: "System Software",
+                c: "Utility Software",
+                d: "Compiler",
+                correct: "b"
+            },
+            {
+                question: "4. What does ALU stand for in a computer?",
+                a: "Application Logic Unit",
+                b: "Arithmetic Logic Unit",
+                c: "Advanced Link Unit",
+                d: "Automated Learning Unit",
+                correct: "b"
+            },
+            {
+                question: "5. Which type of storage is used for long-term data retention?",
+                a: "RAM",
+                b: "Cache",
+                c: "Hard Disk",
+                d: "Registers",
+                correct: "c"
+            },
+            {
+                question: "6. Which of the following is NOT an example of an input device?",
+                a: "Mouse",
+                b: "Scanner",
+                c: "Printer",
+                d: "Keyboard",
+                correct: "c"
+            },
+            {
+                question: "7. Which network type connects computers within a single city?",
+                a: "WAN",
+                b: "MAN",
+                c: "LAN",
+                d: "VPN",
+                correct: "b"
+            },
+            {
+                question: "8. Which device is used to connect multiple computers in a network?",
+                a: "Modem",
+                b: "Router",
+                c: "Hard Disk",
+                d: "Keyboard",
+                correct: "b"
+            },
+            {
+                question: "9. What does HTTP stand for?",
+                a: "HyperText Transfer Protocol",
+                b: "High Transfer Text Process",
+                c: "Hybrid Text Transfer Protocol",
+                d: "Hyper Terminal Text Processing",
+                correct: "a"
+            },
+            {
+                question: "10. Which feature in a word processor is used to correct spelling errors automatically?",
+                a: "Find & Replace",
+                b: "Grammar Check",
+                c: "Spell Check",
+                d: "Word Art",
+                correct: "c"
+            },
+            {
+                question: "11. What is the primary function of an operating system?",
+                a: "Perform calculations",
+                b: "Manage hardware and software resources",
+                c: "Create graphics",
+                d: "Connect to the internet",
+                correct: "b"
+            },
+            {
+                question: "12. Which of the following is an example of an application software?",
+                a: "Windows OS",
+                b: "BIOS",
+                c: "MS Excel",
+                d: "Device Drivers",
+                correct: "c"
+            },
+            {
+                question: "13. Which of the following allows multiple users to use a computer at the same time?",
+                a: "Single-user OS",
+                b: "Multi-user OS",
+                c: "Real-time OS",
+                d: "Embedded OS",
+                correct: "b"
+            },
+            {
+                question: "14. Which keyboard shortcut is used to copy text?",
+                a: "Ctrl + P",
+                b: "Ctrl + X",
+                c: "Ctrl + C",
+                d: "Ctrl + V",
+                correct: "c"
+            },
+            {
+                question: "15. What type of chart is best for showing trends over time?",
+                a: "Pie Chart",
+                b: "Line Chart",
+                c: "Bar Chart",
+                d: "Histogram",
+                correct: "b"
+            },
+            {
+                question: "16. Which file format is commonly used for documents?",
+                a: ".exe",
+                b: ".txt",
+                c: ".docx",
+                d: ".mp3",
+                correct: "c"
+            },
+            {
+                question: "17. What is the shortcut key to save a document in MS Word?",
+                a: "Ctrl + S",
+                b: "Ctrl + P",
+                c: "Ctrl + A",
+                d: "Ctrl + X",
+                correct: "a"
+            },
+            {
+                question: "18. What is used to format a spreadsheet?",
+                a: "Formula Bar",
+                b: "Ribbon",
+                c: "Cell Formatting",
+                d: "All of the above",
+                correct: "d"
+            },
+            {
+                question: "19. Which device helps to convert digital data into analog for transmission?",
+                a: "Hub",
+                b: "Router",
+                c: "Modem",
+                d: "Switch",
+                correct: "c"
+            },
+            {
+                question: "20. Which type of software helps in managing system resources?",
+                a: "Application Software",
+                b: "System Software",
+                c: "Database Software",
+                d: "Multimedia Software",
+                correct: "b"
+            },
+            {
+                question: "21. Which network topology is most reliable but expensive?",
+                a: "Bus",
+                b: "Star",
+                c: "Ring",
+                d: "Mesh",
+                correct: "d"
+            },
+            {
+                question: "22. Which unit in the CPU is responsible for performing calculations?",
+                a: "Control Unit",
+                b: "Memory Unit",
+                c: "ALU",
+                d: "Cache",
+                correct: "c"
+            },
+            {
+                question: "23. What is the purpose of a firewall?",
+                a: "To block spam emails",
+                b: "To manage system files",
+                c: "To protect against unauthorized access",
+                d: "To speed up the internet",
+                correct: "c"
+            },
+            {
+                question: "24. What type of memory is used for temporary storage during processing?",
+                a: "RAM",
+                b: "ROM",
+                c: "Hard Disk",
+                d: "Flash Drive",
+                correct: "a"
+            },
+            {
+                question: "25. What is the function of a spreadsheet?",
+                a: "Edit photos",
+                b: "Store and analyze numerical data",
+                c: "Write programs",
+                d: "Play music",
+                correct: "b"
+            },
+            {
+                question: "26. What is the function of a switch in networking?",
+                a: "To amplify signals",
+                b: "To connect multiple networks",
+                c: "To filter and forward data packets",
+                d: "To provide wireless connectivity",
+                correct: "c"
+            },
+            {
+                question: "27. Which technology is used for wireless communication over short distances?",
+                a: "LAN",
+                b: "Bluetooth",
+                c: "WAN",
+                d: "Fiber Optics",
+                correct: "b"
+            },
+            {
+                question: "28. What does URL stand for?",
+                a: "Uniform Resource Locator",
+                b: "Universal Remote Link",
+                c: "User Registration List",
+                d: "Unified Resource Loader",
+                correct: "a"
+            },
+            {
+                question: "29. Which tool is used for creating online forms and surveys?",
+                a: "Google Docs",
+                b: "Google Forms",
+                c: "MS Paint",
+                d: "WinRAR",
+                correct: "b"
+            },
+            {
+                question: "30. Which of the following is an example of a cloud storage service?",
+                a: "Dropbox",
+                b: "Excel",
+                c: "Photoshop",
+                d: "Notepad",
+                correct: "a"
+            }
+        ];
+
+        let currentQuiz = 0;
+        let score = 0;
+        let timeLeft = 30 * 60;
+
+        const timerEl = document.getElementById("timer");
+        const quizEl = document.getElementById("quiz");
+        const questionEl = document.getElementById("question");
+        const answerEls = document.querySelectorAll(".answer");
+        const a_text = document.getElementById("a_text");
+        const b_text = document.getElementById("b_text");
+        const c_text = document.getElementById("c_text");
+        const d_text = document.getElementById("d_text");
+        const submitBtn = document.getElementById("submit");
+        const feedbackEl = document.getElementById("feedback");
+        const progressBar = document.getElementById("progress-bar");
+
+        function loadQuiz() {
+            deselectAnswers();
+            feedbackEl.textContent = "";
+            const currentQuizData = quizData[currentQuiz];
+            questionEl.innerText = currentQuizData.question;
+            a_text.innerText = currentQuizData.a;
+            b_text.innerText = currentQuizData.b;
+            c_text.innerText = currentQuizData.c;
+            d_text.innerText = currentQuizData.d;
+            updateProgressBar();
+        }
+
+        function deselectAnswers() {
+            answerEls.forEach(answerEl => answerEl.checked = false);
+        }
+
+        function getSelected() {
+            let answer;
+            answerEls.forEach(answerEl => {
+                if (answerEl.checked) {
+                    answer = answerEl.id;
+                }
+            });
+            return answer;
+        }
+
+        function updateProgressBar() {
+            const progress = ((currentQuiz + 1) / quizData.length) * 100;
+            progressBar.style.width = `${progress}%`;
+        }
+
+        function startTimer() {
+            const countdown = setInterval(() => {
+                let minutes = Math.floor(timeLeft / 60);
+                let seconds = timeLeft % 60;
+                timerEl.textContent = `${minutes}:${seconds < 10 ? "0" : ""}${seconds}`;
+                timeLeft--;
+                if (timeLeft < 0) {
+                    clearInterval(countdown);
+                    autoSubmit();
+                }
+            }, 1000);
+        }
+
+        function autoSubmit() {
+            quizEl.innerHTML = `<h2>Time's up! You scored ${score}/${quizData.length}</h2>
+                                <div class="summary">
+                                    <h3>Summary:</h3>
+                                    <p>Correct Answers: ${score}</p>
+                                    <p>Incorrect Answers: ${quizData.length - score}</p>
+                                </div>
+                                <button onclick="location.reload()">Restart</button>`;
+        }
+
+        submitBtn.addEventListener("click", () => {
+            const answer = getSelected();
+            if (answer) {
+                if (answer === quizData[currentQuiz].correct) {
+                    score++;
+                    feedbackEl.textContent = "Correct!";
+                    feedbackEl.style.color = "green";
+                } else {
+                    feedbackEl.textContent = "Incorrect!";
+                    feedbackEl.style.color = "red";
+                }
+                currentQuiz++;
+                if (currentQuiz < quizData.length) {
+                    setTimeout(loadQuiz, 1000);
+                } else {
+                    quizEl.innerHTML = `<h2>You scored ${score}/${quizData.length}</h2>
+                                        <div class="summary">
+                                            <h3>Summary:</h3>
+                                            <p>Correct Answers: ${score}</p>
+                                            <p>Incorrect Answers: ${quizData.length - score}</p>
+                                        </div>
+                                        <button onclick="location.reload()">Restart</button>`;
+                }
+            }
+        });
+
+        loadQuiz();
+        startTimer();
+    </script>
+
+</body>
+</html>
